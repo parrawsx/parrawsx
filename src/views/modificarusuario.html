@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+    window.onload = function() {
+        añadirdatos()
+    };
+    //datos del usuario
+    function añadirdatos() {
+        correo=$('#correo').val(`${localStorage.getItem('correo')}`)
+        nombre=$('#nombre').val(`${localStorage.getItem('nombre')}`)
+    }
+    //modificar usuario
+    function ModificarUsuario(){ 
+        nombre=$('#nombre').val()
+        correo=$('#correo').val()
+        passwd=$('#passwd').val()==""?"null":$('#passwd').val();        
+        id=localStorage.getItem('id')
+        usuario=objetoselect=$.ajax({url:"/modificarusuarioa", type: "POST",data: {nombre : nombre,correo:correo,passwd : passwd,id:id}, async: false})
+        $.jGrowl('usuario modificado', { life:10000,theme:'growl-success'});
+        usuario=objetoselect=$.ajax({url:"/logmodusuario", type: "POST",data: {id:id}, async: false})
+        localStorage.clear();
+        localStorage.setItem('id', id);
+        localStorage.setItem('nombre', usuario.responseJSON[0].nickname);
+        localStorage.setItem('correo', usuario.responseJSON[0].correo);
+        localStorage.setItem('imagen', usuario.responseJSON[0].imagen);
+
+        window.location.replace("/");
+    }
+    //cerrar sesion
+    function Cerrarsesion(){
+        localStorage.clear();
+        window.location.replace("/");
+    }
+
+    //volvar para atras
+    function atras() {
+        window.history.go(-1);
+    }
+
+
+</script>
+<head>
+    <link href="/public/css/register.css" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/public/jquery.jgrowl.min.js"></script>
+    <link href="/public/jgrowl.css" rel="stylesheet" type="text/css">
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table class="contenedor">
+        <tr><td id="atrasdiv"><button id="atras" onclick="atras()">atras</button></td></tr>
+        <tr>
+        
+        <td  colspan="2"  ><h1 id="registrarse">Modificar cuenta </h1></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="text" id="nombre" placeholder="Usuario"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="text" id="correo" placeholder="Correo electronico"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="password" id="passwd" placeholder="Nueva contraseña"></td>
+        </tr>
+        <tr>
+        </tr>
+
+        <tr>
+            <td id="divenviar"><button id="enviar" onclick="ModificarUsuario()">Modificar</button></td>
+            <td id="divenviar"><button id="enviar" onclick="Cerrarsesion()">Cerrar sesion</button></td>
+        </tr>
+    </table>
+</body>
+</html>

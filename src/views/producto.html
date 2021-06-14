@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--css-->
+    <link href="/public/css/articulo.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/base.css" rel="stylesheet"  type="text/css">
+    <link href="/public/css/normalizador.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/reseteador.css" rel="stylesheet" type="text/css">
+    
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/public/jquery.jgrowl.min.js"></script>
+    <link href="/public/jgrowl.css" rel="stylesheet" type="text/css">
+
+    <!--fin-->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>algo</title>
+</head>
+
+<script>
+    //funciones al abrir vista
+    window.onload = function() { 
+        comprobarlog();
+        Obtenerarticulos();
+    };
+ 
+    //variables de la vista
+    var objetoselect=[];
+    var ofertaselect=[];
+    var ofertaseleccion=[];
+    var arrayatributos=[];
+    var inoferta = false;
+    var admin=false;
+    var urlparam =getparameterurl('var');
+
+
+
+    //obtener param url
+    function getparameterurl(name){
+            
+            let url = window.location.href
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+            if (!results) return null;
+             if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    
+            }
+    //=======================================================================
+    
+
+    //GET Y POST
+    function  Obtenerarticulos(){
+        objetoselect=[];
+        objetoselect=$.ajax({url:"/getproducto", type: "GET",headers: {"articulo":urlparam}, async: false})
+        
+        Obtenerofertas()
+
+    };
+    function  Obtenerofertas(){
+        ofertaselect=$.ajax({url:"/Obtenerofertas", type: "GET", async: false},)
+       
+        inoferta = ofertaselect.responseJSON.some(e=>e.ID_producto==objetoselect.responseJSON[0].ID_producto)
+        ofertaseleccion =[ofertaselect.responseJSON.find(e=>e.ID_producto==objetoselect.responseJSON[0].ID_producto)]
+        if (inoferta) {
+            addarticulo(ofertaseleccion)
+        }
+        else{
+            addarticulo(objetoselect.responseJSON);
+        }
+            
+    };
+
+
+    //HTML AÑADIR ARTICULOS
+    function addarticulo(obj) {
+        $("#cuerpo").empty();
+        arrayatributos=$.ajax({url:"/getatributos", type: "POST",data: {nombreproducto:obj[0].Nombre}, async: false})
+        let x=0;
+            let Precio = typeof obj[0].precdesc === "undefined" ? obj[0].Precio : obj[0].precdesc
+            Precio = Math.round(Precio);
+
+
+            
+
+            $('#cuerpo').append(
+
+            `<div id="articulo">
+            <img src="${obj[0].Foto_ruta}" alt="" width="" height="500">
+            <h1 id="tituloart">${obj[0].Marca} ${obj[0].Nombre}</h1><hr>
+            <div id="datos">
+                <table  id="atributos">
+                    
+                </table>
+            </div>
+            
+        </div>`);
+        x=0;
+        while (x<arrayatributos.responseJSON.length) {
+            $('#atributos').append(`
+                <tr>
+                    <td class="nombre">${arrayatributos.responseJSON[x].Nombre}: </td>
+                    <td class="valor"> ${arrayatributos.responseJSON[x].Valor}</td>
+                </tr>
+
+            `)
+            x=x+1 
+        }
+        if (admin) {
+            $('#atributos').append(`
+                <tr>
+                    <td class="nombre"> <input type="text" id="nombreatrib" maxlength="20" placeholder="nombre" size="15" ></td>
+                    <td class="valor"> <input type="text" id="valoratrib" maxlength="20" placeholder="valor" size="15"> <button type="button" id="botonguaratrib" onclick="guardaratribnuevo()">guardar</button></td>
+                </tr>
+            `)
+        }
+       
+        $('#articulo').append(`<div id="comprarycesta">
+                <h1>${Precio}€</h1>
+                <hr>
+                <p>Stock: ${obj[0].stock}</p>
+                <label>cantidad <input id="cantidadcomprar" type="number" value="1" min="1" max="${obj[0].stock}"></label>
+                <button  id="comprar" onclick="Tipopedido()">comprar</button>
+                <button id="cesta" onclick="Tipocesta()">añadir a la cesta</button>
+            </div>`)
+
+       // $('#comprar').click(añadirpedido(obj))
+
+        x=x+1;   
+    };
+    //mandar un producto a la cesta de ese usuario
+    function  Tipocesta(){       
+        if (localStorage.getItem('nombre') && localStorage.getItem('correo') && localStorage.getItem('id'))  {
+            inoferta = ofertaselect.responseJSON.some(e=>e.ID_producto==objetoselect.responseJSON[0].ID_producto)
+            ofertaseleccion =[ofertaselect.responseJSON.find(e=>e.ID_producto==objetoselect.responseJSON[0].ID_producto)]
+            if (inoferta) {
+                añadircesta(ofertaseleccion)
+            }
+            else{
+                añadircesta(objetoselect.responseJSON);
+            } 
+        }
+        
+        else{
+            $.jGrowl('tienes que estar registrado para tener una cesta', { life:10000,theme:'growl-error'});
+
+        }
+    };
+
+    function añadircesta(obj){
+            let Usuarioid=localStorage.getItem('id');
+            let productoid=obj[0].ID_producto;
+            let Precio= typeof obj[0].precdesc === "undefined" ? obj[0].Precio : obj[0].precdesc
+            let cantidad =$('#cantidadcomprar').val();
+            x=0;
+            while (x<cantidad) {
+                objetoselect=$.ajax({type: "POST",url: "/cesta",data: {usuario:Usuarioid,producto:productoid,Precio:Precio},async: false});
+                x=x+1;
+                
+            }
+
+
+            if (objetoselect.responseJSON.affectedRows==1) {
+                $.jGrowl('añadido a tu cesta', { life:3000,theme:'growl-success'});
+                window.location.replace("/cesta");
+        }
+        
+    };
+    //comprar un producto
+    function  Tipopedido(){    
+        if (localStorage.getItem('nombre') && localStorage.getItem('correo') && localStorage.getItem('id'))  {
+            inoferta = ofertaselect.responseJSON.some(e=>e.ID_producto==objetoselect.responseJSON[0].ID_producto)
+            ofertaseleccion =[ofertaselect.responseJSON.find(e=>e.ID_producto==objetoselect.responseJSON[0].ID_producto)]
+            if (inoferta) {
+                añadirpedido(ofertaseleccion)
+            }
+            else{
+                añadirpedido(objetoselect.responseJSON);
+            } 
+        }
+        
+        else{
+            alert('tienes que estar registrado para tener una cesta')
+        }        
+    };
+
+
+    function añadirpedido(obj){
+        if (localStorage.getItem('nombre') && localStorage.getItem('correo') && localStorage.getItem('id'))  {
+            let Usuarioid=localStorage.getItem('id');
+            let productoid=obj[0].ID_producto;
+            let cantidad =$('#cantidadcomprar').val()
+            let Precio= typeof obj[0].precdesc === "undefined" ? obj[0].Precio*cantidad : obj[0].precdesc*cantidad
+
+
+            //crear pedido base de datos
+            //crear el pedido
+            pedido=$.ajax({type: "POST",url: "/pedido",data: {usuario:Usuarioid},async: false});
+            //añadir producto al pedido
+            let idpedido=pedido.responseJSON.insertId
+            $.ajax({type: "POST",url: "/addproped",data: {idpedido:idpedido,producto:productoid,cantidad:cantidad,Precio:Precio},async: false});
+            //quitar del stock
+            x=0;
+            while (x<cantidad) {
+               $.ajax({type: "POST",url: "/borrarstock",data: {idarticulo:productoid,cantidad:cantidad},async: false});
+                x=x+1;
+            }
+            //crear estado al pedido
+           $.ajax({type: "POST",url:"/crearestado",data: {idpedido:idpedido},async: false});
+            //==============================================
+
+
+                alert('Pedido realizado')
+
+                let correo=localStorage.getItem('correo');  
+                let cabecera=`Compra de ${obj[0].Nombre} con numero ${productoid} ha sido realizada`;
+                let texto=`Su compra de ${cantidad} ${obj[0].Nombre} por ${Precio}€ sido realizada 
+Nuestros administradores la estan tramitando`;
+                $.ajax({url:"/email", type: "POST",data: {correo:correo,cabecera:cabecera,texto:texto}, async: false})
+                window.location.replace("/");
+
+            
+        }
+        else{
+                alert('tienes que estar registrado para comprar')
+            }
+    };
+
+ //añadir atributos
+    function guardaratribnuevo(){
+        categoria=objetoselect.responseJSON[0].id_categoria;
+        nombreprod=objetoselect.responseJSON[0].Nombre;
+        nombreatrib=$('#nombreatrib').val();
+        valoratrib=$('#valoratrib').val();
+
+        console.log(nombreprod)
+        if (nombreatrib==""||valoratrib=="") {
+            alert("rellenar los campos del nombre y el valor")
+        }
+        else{
+        let nuevoatributo=$.ajax({url:"/newatrib", type: "POST",data: {categoria:categoria,nombreprod:nombreprod,nombreatrib:nombreatrib,valoratrib:valoratrib}, async: false})
+        if (nuevoatributo.responseJSON.affectedRows==1) {
+            location.reload();
+        }
+        }
+
+    }
+
+
+
+    //CAMBIO A OTRA VISTA
+    function verproducto(idcatproducto) {
+        window.open(`/producto?var=${idcatproducto}`, "_self");
+    };
+
+    function verproductos(idcatproducto) {
+        window.open(`/productos?var=${idcatproducto}`, "_self");
+    };
+
+
+
+
+
+        //si esta logeado 
+        function comprobarlog() {
+        if (localStorage.getItem('nombre')!=null) {
+            id=localStorage.getItem('id')
+            usuario=$.ajax({url:"/logmodusuario", type: "POST",data: {id:id}, async: false})
+            if (usuario.responseJSON[0].rol==1) {
+            $('#usuario').empty()
+            $('#usuario').append(`<a href ="/modificarusuario">${localStorage.getItem('nombre')} </a>`)
+            $('#usuario').append(`<a href ="/pedidos">Pedidos</a>`) 
+            $('#ifadmin').append(`<button id="botonabrir">agregar nuevo producto</button>`); 
+            admin=true;
+            }
+            else{
+            $('#usuario').empty()
+            $('#usuario').append(`<a href ="/modificarusuario">${localStorage.getItem('nombre')} </a>`)
+            $('#usuario').append(`<a href ="/cesta">Cesta </a>`)
+            }
+        }
+    }
+
+    function buscarproducto() {
+        if ($('#buscarvalor').val()) {
+            window.open(`/productos?busqueda=${$('#buscarvalor').val()}`, "_self");
+
+        }
+        else{
+            alert ('No ha escrito nada para buscar')
+        }
+    }
+    function myFunction(x) {
+            x.classList.toggle("change");
+            $("#myDropdown").toggleClass("oculto");
+        }
+
+
+
+
+    </script>
+
+<body>
+    <div class="navbar">
+        <div id="logoDropdown">
+            <div id="logo">
+                <a href="/"></a>
+            </div>
+            <div id="dropdown" onclick="myFunction(this)">
+                <div id="btnDropdown">
+                    <div class="bar1"></div>
+                    <div class="bar2"></div>
+                    <div class="bar3"></div>    
+                    
+                </div>
+                <div class="dropdown-content oculto" id="myDropdown">
+                    <a onclick="verproductos(8)" class="Prodhijo">Placas Base</a>
+                    <a onclick="verproductos(5)" class="Prodhijo">Procesadores</a>
+                    <a onclick="verproductos(2)" class="Prodhijo">Discos Duros</a>
+                    <a onclick="verproductos(4)" class="Prodhijo">Tarjetas Gráficas</a>
+                    <a onclick="verproductos(6)" class="Prodhijo">Memoria RAM</a>
+                    <a onclick="verproductos(7)" class="Prodhijo">Cajas</a>
+                    <a onclick="verproductos(3)" class="Prodhijo">Fuentes Alimentación</a>
+                </div>
+            </div>
+        </div>
+
+        <!--
+            <button class="dropbtn">Dropdown</button>
+             <div class="dropdown-content" id="myDropdown">
+                <a onclick=verproductos(8) class="Prodhijo">Placas Base</a>
+                <a onclick=verproductos(5) class="Prodhijo">Procesadores</a>
+                <a onclick=verproductos(2) class="Prodhijo">Discos Duros</a>
+                <a onclick=verproductos(4) class="Prodhijo">Tarjetas Gráficas</a>
+                <a onclick=verproductos(6) class="Prodhijo">Memoria RAM</a>
+                <a onclick=verproductos(7) class="Prodhijo">Cajas</a>
+                <a onclick=verproductos(3) class="Prodhijo">Fuentes Alimentación</a>
+            </div>
+    -->
+        <div id="buscar">
+            <input id="buscarvalor" type="search" placeholder="Buscar" size="35" /><button
+                onclick="buscarproducto()"
+                id="btnbuscar"
+            >
+                <img src="/public/iconos/buscar.png" width="20" height="20" />
+            </button>
+        </div>
+
+        <div id="usuario">
+            <a href="/login">Logearse</a>
+            <a href="/register">Registrarse</a>
+        </div>
+    </div>
+
+    <div id="cuerpo" >
+
+    </div>
+    <div class="footer">
+
+    <div class="footertitulo">
+            <i>aaaa</i>
+    </div>
+
+    <hr class="separador">
+
+
+    <div class="footercontenido">
+        <div>
+            <h4 class="columnas"><Strong><u>Categorias</u></Strong></h4>
+            <a onclick=verproductos(8) class="columnasfooter">Placas Base</a>
+            <a onclick=verproductos(5) class="columnasfooter">Procesadores</a>
+            <a onclick=verproductos(2) class="columnasfooter">Discos Duros</a>
+            <a onclick=verproductos(4) class="columnasfooter">Tarjetas Gráficas</a>
+            <a onclick=verproductos(6) class="columnasfooter">Memoria RAM</a>
+            <a onclick=verproductos(7) class="columnasfooter">Cajas</a>
+            <a onclick=verproductos(3) class="columnasfooter">Fuentes Alimentación</a>
+            </div>
+
+        <div>
+        </div>
+    </div>
+
+    <div class="footerfinal">
+        <div>adasdasdasd</div>
+    </div>
+</div>
+
+    
+</body>
+
+
+<script>
+
+
+
+$(".dropbtn").hover(function () {
+    mostrar($("#myDropdown")[0]);
+    })
+$("#myDropdown").hover(false,function () {
+    ocultar($("#myDropdown")[0]);
+    })
+
+function mostrar(elemento) {
+    elemento.classList.add('show');
+}
+
+function ocultar(elemento) {
+    elemento.classList.remove('show');
+}
+</script>
+
+</html>

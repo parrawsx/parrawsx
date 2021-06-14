@@ -1,0 +1,366 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+/** 
+FUENTES
+*/
+
+i {
+  font-family: Roboto, sans-serif;
+}
+.navbar {
+    padding-bottom: 1%;
+    display: grid;
+    grid-template-columns: 2fr 3fr 2fr;
+    font-family: Roboto, sans-serif;
+    font-size: 24px;
+
+    background-color: rgb(141, 141, 141);
+    padding: 0.5%;
+}
+
+.navbar > * {
+    margin: auto;
+}
+
+#logoDropdown {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    width: 100%;
+}
+
+#logo {
+    grid-column: 1;
+    margin: auto;
+}
+
+#logo > a {
+    display: block;
+    width: 25px;
+    height: 25px;
+    background-color: black;
+}
+
+.navbar a {
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: text-shadow 0.5s ease;
+}
+
+#buscar {
+    grid-column: 2;
+    font-size: 100%;
+}
+
+#usuario {
+    grid-column: 3;
+}
+
+.container {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.bar1,
+.bar2,
+.bar3 {
+    width: 35px;
+    height: 5px;
+    background-color: #333;
+    margin: 6px 0;
+    transition: 0.4s;
+}
+
+.change .bar1 {
+    -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+    transform: rotate(-45deg) translate(-9px, 6px);
+}
+
+.change .bar2 {
+    opacity: 0;
+}
+
+.change .bar3 {
+    -webkit-transform: rotate(45deg) translate(-8px, -8px);
+    transform: rotate(45deg) translate(-8px, -8px);
+}
+
+#btnbuscar {
+    background-color: rgb(255, 255, 255);
+    border-style: solid;
+
+    border-color: rgb(255, 255, 255);
+}
+#buscarvalor {
+    background-color: rgb(255, 255, 255);
+    border-style: solid;
+    border-color: rgb(255, 255, 255);
+}
+#btnbuscar:hover {
+    background-color: rgb(212, 212, 212);
+    border-color: rgb(212, 212, 212);
+}
+
+.navbar a:hover,
+.navbar2 a:hover,
+.dropdown:hover .dropbtn,
+.dropbtn:focus {
+  text-shadow: 1px 1px 2px black, 0 0 1em gray, 0 0 0.2em lightgray;
+}
+
+#dropdown {
+  margin: auto 0;
+    width: 35px;
+    cursor: pointer;
+    height: 35px;
+}
+
+.oculto {
+  display: none;
+}
+
+.dropdown-content {
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+.ProdPrincipal {
+    font-size: 20px;
+    font-weight: bold;
+}
+.Prodhijo {
+    font-size: 17px;
+}
+
+.show {
+    display: block;
+}
+
+/* Footer */
+.footer {
+    font-size: 20px;
+    width: 100%;
+    background-color: rgb(0, 0, 0);
+    color: white;
+    text-align: center;
+}
+hr.separador {
+    border: 1px solid rgb(252, 0, 0);
+}
+.footertitulo {
+    text-align: left;
+}
+
+.footercontenido {
+    padding-bottom: 1%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.footerfinal {
+    background-color: rgb(0, 0, 0);
+    display: grid;
+    width: 100%;
+    grid-template-rows: repeat(2, 1fr);
+    float: left;
+}
+.columnas {
+    display: grid;
+    flex-direction: column;
+    text-align: center;
+}
+.checkgrande {
+    margin: 10px 0px;
+    height: 25px;
+    width: 25px;
+}
+.activado {
+    border: 1px solid black;
+    width: 50%;
+    margin-top: 1%;
+    margin-bottom: 2%;
+    padding-left: 1%;
+}
+.fondo_transparente {
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.226);
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+.modal {
+    background: linear-gradient(0deg, white 80%, crimson 20%);
+    width: 50%;
+    height: 70%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    border-radius: 30px;
+}
+.modal_cerrar {
+    background: white;
+    position: absolute;
+    right: 2%;
+    color: crimson;
+    top: 3%;
+    width: 40px;
+    height: 40px;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.modal_titulo {
+    color: white;
+    font-size: 40px;
+}
+.modal_mensaje {
+    padding-top: 10%;
+    padding-right: 3%;
+    padding-left: 3%;
+}
+.modal_botones {
+    width: 100%;
+    background: whitesmoke;
+    border-top: whitesmoke 1px;
+    margin-top: 9%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    display: none;
+
+    display: flex;
+    justify-content: space-evenly;
+    border-radius: 25px;
+}
+
+.boton {
+    background: white;
+    padding: 8px 30px;
+    color: rgb(255, 0, 51);
+    text-decoration: none;
+    border-radius: 25px;
+    border: 1px solid rgb(255, 0, 51);
+}
+.boton:hover {
+    background: rgb(255, 0, 51);
+    color: white;
+}
+
+#botonabrir {
+    display: inline;
+    margin-top: 10%;
+    margin-right: 50%;
+    height: 50px;
+}
+#botonabriroderta {
+    display: inline;
+    margin-top: 4%;
+    margin-right: 50%;
+    height: 50px;
+}
+button {
+    cursor: pointer;
+}
+
+.Prodhijo {
+    cursor: pointer;
+}
+.columnasfooter {
+    display: grid;
+    flex-direction: column;
+    text-align: left;
+    margin-left: 40%;
+    margin-right: 40%;
+    margin-top: 0.5%;
+}
+.columnasfooter:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.fondo_transparente2 {
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.226);
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+.modal2 {
+    background: linear-gradient(0deg, white 80%, crimson 20%);
+    width: 50%;
+    height: 70%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    border-radius: 30px;
+}
+.modal_cerrar2 {
+    background: white;
+    position: absolute;
+    right: 2%;
+    color: crimson;
+    top: 3%;
+    width: 40px;
+    height: 40px;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.modal_titulo2 {
+    color: white;
+    font-size: 40px;
+}
+.modal_mensaje2 {
+    padding-top: 10%;
+    padding-right: 3%;
+    padding-left: 3%;
+}
+.modal_botones2 {
+    width: 100%;
+    background: whitesmoke;
+    border-top: whitesmoke 1px;
+    margin-top: 9%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    display: none;
+
+    display: flex;
+    justify-content: space-evenly;
+    border-radius: 25px;
+}
+#relieve {
+    color: rgb(10, 10, 10);
+}

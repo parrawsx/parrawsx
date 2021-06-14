@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!--css-->
+        <link href="/public/css/reseteador.css" rel="stylesheet" type="text/css" />
+        <link href="/public/css/normalizador.css" rel="stylesheet" type="text/css" />
+        <link href="/public/css/index.css" rel="stylesheet" type="text/css" />
+        <link href="/public/css/base.css" rel="stylesheet" type="text/css" />
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="/public/jquery.jgrowl.min.js"></script>
+        <link href="/public/jgrowl.css" rel="stylesheet" type="text/css" />
+        <!--fin-->
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>algo</title>
+    </head>
+    <script>
+        //variables
+        var objetoselect = [];
+
+        //funciones usadas al inicio
+        window.onload = function () {
+            Obtenerofertas();
+            addofertas(objetoselect.responseJSON);
+            comprobarlog();
+        };
+
+        //obtener ofertas
+        function Obtenerofertas() {
+            objetoselect = $.ajax({ url: "/Obtenerofertas", type: "GET", async: false });
+        }
+
+        //añadir las ofertas a la pagina
+        function addofertas(obj, primeravez) {
+            if (obj.length < 3) {
+                let x = 0;
+                let index = 0;
+
+                while (x < 1) {
+                    $("#cuerpo").append(`<div id=anuns${x} class="anuns">`);
+
+                    let y = 0;
+                    while (y < obj.length) {
+                        $(`#anuns${x}`).append(
+                            `<button onclick=verproducto("${obj[index].ID_producto}") class="columnas"><i class="anundescrip">${obj[index].descripcion}</i><a><img src="${obj[index].Foto_ruta}" alt="" width="200" height="200"></a><i>${obj[index].Nombre}</i><br><i>${obj[index].Precio}€</i></button>`
+                        );
+                        y = y + 1;
+                        index = index + 1;
+                    }
+                    x = x + 1;
+                }
+            } else {
+                console.log(Math.round(8 / 3));
+                let redondeo = Math.round(obj.length / 3);
+                let x = 0;
+                let index = 0;
+
+                while (x < redondeo) {
+                    $("#cuerpo").append(`<div id=anuns${x} class="anuns">`);
+
+                    let y = 0;
+
+                    while (y < 3) {
+                        $(`#anuns${x}`).append(
+                            `<button onclick=verproducto("${obj[index].ID_producto}") class="columnas"><i class="anundescrip">${obj[index].descripcion}</i><a><img src="${obj[index].Foto_ruta}" alt="" width="200" height="200"></a><i>${obj[index].Nombre}</i><br><i>${obj[index].Precio}€</i></button>`
+                        );
+                        y = y + 1;
+                        index = index + 1;
+                    }
+                    x = x + 1;
+                }
+            }
+        }
+
+        //CAMBIO A OTRA VISTA
+        function verproducto(idcatproducto) {
+            window.open(`/producto?var=${idcatproducto}`, "_self");
+        }
+
+        function verproductos(idcatproducto) {
+            window.open(`/productos?var=${idcatproducto}`, "_self");
+        }
+
+        //si esta logeado
+        function comprobarlog() {
+            if (localStorage.getItem("nombre") != null) {
+                id = localStorage.getItem("id");
+                usuario = $.ajax({ url: "/logmodusuario", type: "POST", data: { id: id }, async: false });
+                if (usuario.responseJSON[0].rol == 1) {
+                    $("#usuario").empty();
+                    $("#usuario").append(`<a href ="/modificarusuario">${localStorage.getItem("nombre")} </a>`);
+                    $("#usuario").append(`<a href ="/pedidos">Pedidos</a>`);
+                } else {
+                    $("#usuario").empty();
+                    $("#usuario").append(`<a href ="/modificarusuario">${localStorage.getItem("nombre")} </a>`);
+                    $("#usuario").append(`<a href ="/cesta">Cesta </a>`);
+                }
+            }
+        }
+
+        function buscarproducto() {
+            if ($("#buscarvalor").val()) {
+                window.open(`/productos?busqueda=${$("#buscarvalor").val()}`, "_self");
+            } else {
+                $.jGrowl("No ha escrito nada para buscar", { life: 10000, theme: "growl-error" });
+            }
+        }
+
+        function myFunction(x) {
+            x.classList.toggle("change");
+            $("#myDropdown").toggleClass("oculto");
+        }
+    </script>
+    <body>
+        <div class="navbar">
+            <div id="logoDropdown">
+                <div id="logo">
+                    <a href="/"></a>
+                </div>
+                <div id="dropdown" onclick="myFunction(this)">
+                    <div id="btnDropdown">
+                        <div class="bar1"></div>
+                        <div class="bar2"></div>
+                        <div class="bar3"></div>    
+                        
+                    </div>
+                    <div class="dropdown-content oculto" id="myDropdown">
+                        <a onclick="verproductos(8)" class="Prodhijo">Placas Base</a>
+                        <a onclick="verproductos(5)" class="Prodhijo">Procesadores</a>
+                        <a onclick="verproductos(2)" class="Prodhijo">Discos Duros</a>
+                        <a onclick="verproductos(4)" class="Prodhijo">Tarjetas Gráficas</a>
+                        <a onclick="verproductos(6)" class="Prodhijo">Memoria RAM</a>
+                        <a onclick="verproductos(7)" class="Prodhijo">Cajas</a>
+                        <a onclick="verproductos(3)" class="Prodhijo">Fuentes Alimentación</a>
+                    </div>
+                </div>
+            </div>
+
+            <!--
+                <button class="dropbtn">Dropdown</button>
+                 <div class="dropdown-content" id="myDropdown">
+                    <a onclick=verproductos(8) class="Prodhijo">Placas Base</a>
+                    <a onclick=verproductos(5) class="Prodhijo">Procesadores</a>
+                    <a onclick=verproductos(2) class="Prodhijo">Discos Duros</a>
+                    <a onclick=verproductos(4) class="Prodhijo">Tarjetas Gráficas</a>
+                    <a onclick=verproductos(6) class="Prodhijo">Memoria RAM</a>
+                    <a onclick=verproductos(7) class="Prodhijo">Cajas</a>
+                    <a onclick=verproductos(3) class="Prodhijo">Fuentes Alimentación</a>
+                </div>
+        -->
+            <div id="buscar">
+                <input id="buscarvalor" type="search" placeholder="Buscar" size="35" /><button
+                    onclick="buscarproducto()"
+                    id="btnbuscar"
+                >
+                    <img src="/public/iconos/buscar.png" width="20" height="20" />
+                </button>
+            </div>
+
+            <div id="usuario">
+                <a href="/login">Logearse</a>
+                <a href="/register">Registrarse</a>
+            </div>
+        </div>
+
+        <div id="cuerpo"></div>
+
+        <div class="footer">
+            <div class="footertitulo">
+                <i id="relieve">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</i>
+            </div>
+
+            <hr class="separador" />
+
+            <div class="footercontenido"></div>
+        </div>
+    </body>
+</html>

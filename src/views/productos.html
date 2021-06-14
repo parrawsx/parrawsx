@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--css-->
+    <link href="/public/css/productos.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/base.css" rel="stylesheet"  type="text/css">
+    <link href="/public/css/normalizador.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/reseteador.css" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="/public/jquery.jgrowl.min.js"></script>
+<link href="/public/jgrowl.css" rel="stylesheet" type="text/css">
+
+
+    <!--fin-->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>algo</title>
+
+    <script>
+    //funciones al abrir vista
+    window.onload = function() {
+        comprobarlog() ;
+        ifadmin();
+
+
+        abrirmodal();
+        cerrarmodal();
+        abrirmodal2();
+        cerrarmodal2();
+        filtrar();
+
+    };
+    //funcion si es admin o no
+    function ifadmin() {
+        if (admin) {
+        Obtenerarticulosadmin();
+        rellenarselectmarca();
+        rellenarselectmarca($(`#selectbcategoria`).val());
+        rellenarselectprodofer();
+        } 
+        else{
+        Obtenerarticulos();
+        rellenarselectmarca();
+        rellenarselectmarca($(`#selectbcategoria`).val());
+        }
+    }
+
+
+    //variables de la vista
+    var admin=false;
+    var objetoselect=[];
+    var urlparam =getparameterurl('var')==null?null:getparameterurl('var');
+    var urlparambuscar =getparameterurl('busqueda')==null?null:getparameterurl('busqueda');
+    var arraycategoria= [];
+    var arraymarca=[];
+    var pedidos=[];
+    var productosofer=[];
+    var arrayordernar= [
+        {id:0,value :'fecha'},
+        {id:1,value: 'precio asc'},
+        {id:2,value: 'precio desc'},
+        {id:3,value: 'stock desc'}
+    ]
+
+
+
+    //obtener param url
+    function getparameterurl(name){
+            
+            let url = window.location.href
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+            if (!results) return null;
+             if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    
+            }
+    //=======================================================================
+    
+
+    //GET Y POST
+    function  Obtenerarticulos(){
+        
+        objetoselect=[];
+        if (urlparam) {
+            objetoselect=$.ajax({url:"/Obtenerarticulos", type: "GET",headers: {"categoria":urlparam}, async: false})
+        }
+        if (urlparambuscar) {
+            objetoselect=$.ajax({url:"/buscar", type: "POST",data: {Busqueda:urlparambuscar}, async: false})
+            borrarfiltrar()
+        }
+        addarticulo(objetoselect.responseJSON);
+
+    };
+    
+    function  Obtenerarticulosadmin(){
+        objetoselect=[];
+        if (urlparam) {
+            objetoselect=$.ajax({url:"/Obtenerarticulosadmin", type: "GET",headers: {"categoria":urlparam}, async: false})
+        }
+        if (urlparambuscar) {
+            objetoselect=$.ajax({url:"/buscar", type: "POST",data: {Busqueda:urlparambuscar}, async: false})
+            borrarfiltrar()
+        }
+        addarticulo(objetoselect.responseJSON);
+
+    };
+
+    function borrarfiltrar() {
+        $('#buscarprod').empty();
+        
+    }
+    function  rellenarselectmarca(){
+        $('#selectbmarca').empty();
+        
+        arraymarca= [];
+        arraymarca=$.ajax({url:"/getmarcas", type: "GET", async: false})
+        arraymarca=arraymarca.responseJSON;
+        if (urlparam) {
+            arraymarca=arraymarca.filter(e=>e.id_categoria==urlparam);
+        }
+        if (urlparambuscar) {
+            arraymarca=arraymarca.filter(e=>e.id_categoria==urlparambuscar);
+        }
+        x=0;
+        $('#selectbmarca').append(`<option value="-1" selected>todos</option>`);
+        while (x<arraymarca.length) {
+            $('#selectbmarca').append(`<option value="${arraymarca[x].id_categoria}">${arraymarca[x].Marca}</option>`);
+            x=x+1;
+        }
+    };
+
+    function  rellenarselectprodofer(){
+        $('#prodforofer').empty();
+        
+        productosofer= [];
+        productosofer=$.ajax({url:"/proforofer", type: "GET", async: false})
+        productosofer=productosofer.responseJSON;
+
+        x=0;
+        $('#prodforofer').append(`<option value="-1" selected></option>`);
+        while (x<productosofer.length) {
+            $('#prodforofer').append(`<option value="${productosofer[x].ID_producto}">${productosofer[x].Nombre}</option>`);
+            x=x+1;
+        }
+    };
+
+
+
+function filtrar() {
+    $('#valormax').change(function() {
+        Filtrararticulos();
+});
+    $('#valormin').change(function() {
+        Filtrararticulos()
+});
+    $("#bmarca").change(function() {
+        Filtrararticulos()
+});
+$("#rangopreciomin").change(function() {
+        Filtrararticulos()
+});
+$("#rangopreciomax").change(function() {
+        Filtrararticulos()
+});
+$("#rangopreciomax").change(function() {
+        Filtrararticulos()
+});
+
+}
+
+
+//funcion que buscaria productos con los filtros antes dados
+    function  Filtrararticulos(){
+        debugger
+        let PrecioMax = $('#valormax').val();
+        let PrecioMin =$('#valormin').val() ;
+        let Marca =  $("#bmarca option:selected").val()!=-1 ? `select DISTINCT(Marca)from productos where Marca="${$("#bmarca option:selected").html()}"`:'select DISTINCT(Marca)from productos';
+        let categoria=urlparam;
+        let order = arrayordernar.find(e=>e.id==$("#ordenar option:selected").val()).value
+        objetoselect=[];
+        if (admin) {
+        objetoselect=$.ajax({url:"/filtrarticulosadmin", type: "POST",data: {PrecioMax: PrecioMax,PrecioMin:PrecioMin,Marca:Marca,categoria: categoria,order:order}, async: false})   
+        }
+        else{
+        objetoselect=$.ajax({url: "/filtrarticulos",type: "POST",data: {PrecioMax: PrecioMax,PrecioMin:PrecioMin,Marca:Marca,categoria: categoria,order:order},async: false});
+        }
+        addarticulo(objetoselect.responseJSON);
+    };
+    function buscarproducto() {
+        if ($('#buscarvalor').val()) {
+            window.open(`/productos?busqueda=${$('#buscarvalor').val()}`, "_self");
+
+        }
+        else[
+            alert ('No ha escrito nada para buscar')
+        ]
+    }
+
+
+//<label id="activo${obj[x].ID_producto}">${activo}</label> &nbsp;&nbsp;
+//<input class="checkgrande" type="checkbox"  ${obj[x].Activo==1?"checked":""} onchange="checkchange(this,'${obj[x].ID_producto}')">
+
+
+    //HTML AÑADIR ARTICULOS
+    function addarticulo(obj) {
+        $("#productos").empty();
+        let x=0;
+            while (x < obj.length) {
+            if(admin){
+                activo=obj[x].Activo==1?"Activo":"No activado"
+                $('#productos').append(`
+                <button id=${obj[x].ID_producto} onclick=verproducto("${obj[x].ID_producto}")> 
+                <div class="producto"><img src=${obj[x].Foto_ruta} alt="" width="150" height="150"><div class="informacion">
+                <h4>${obj[x].Marca} ${obj[x].Nombre}</h4><p>${obj[x].Precio}€</p></div></div ></button><div class="activado">
+                <label id="stockaje">stock</label>
+                <input type="number" id="quantity${obj[x].ID_producto}" min="0" max="99999" size="3" value="${obj[x].stock}">
+                <button onclick="añadiroquitar(${obj[x].ID_producto})">cambiar stock</button>
+                </div>`);
+            }
+            else{
+                $('#productos').append(`<button id=${obj[x].ID_producto} onclick=verproducto("${obj[x].ID_producto}")> <div class="producto"><img src=${obj[x].Foto_ruta} alt="" width="150" height="150"><div class="informacion"><h4>${obj[x].Marca} ${obj[x].Nombre}</h4><p>${obj[x].Precio}€</p></div></div></button>`);
+
+            }
+            x=x+1;
+            }     
+    };
+     
+    function añadiroquitar(idarticulo,){
+        let cantidad=$(`#quantity${idarticulo}`).val()
+        $.ajax({url: "/eliminarstock",type: "POST",data:{idarticulo:idarticulo},async:false});
+        x=0;
+        while (x<cantidad) {
+            $.ajax({url: "/anadirstock",type: "POST",data:{idarticulo:idarticulo},async:false});
+            x=x+1;
+        }
+    }
+
+
+    //si un check box cambia usaria esta funcion
+    function checkchange(elem,index){
+        id=index
+        activo=$(elem).is(":checked");
+        pedidos=[]
+        pedidos=$.ajax({url: "/obtenerpedidos",type: "GET",async:false});
+
+        console.log(pedidos);
+        let existepedido=pedidos.responseJSON.some(e=>e.ID_producto==id)
+        if (existepedido) {
+           alert("no se puede activar el producto al estar en un pedido")
+        }
+        else{
+            $.ajax({url: "/chgactivo",type: "POST",data: {id:id,activo:activo}});
+            $(`#activo${index}`).empty();
+            $(`#activo${index}`).html(activo==true?"Activo":"No activado");
+        }
+        
+
+    }
+    
+    function añadirarticulo(){
+        debugger
+        let nombre = $('#nomart').val()==""?'mal':$('#nomart').val();
+        let categoria = $('#catart').val()==""?'mal':$('#catart').val();
+        let precio = $('#precart').val()==""?'mal':$('#precart').val();
+        let marca = $('#marcart').val()==""?'mal':$('#marcart').val();
+        let urlfotos =$('#subirfoto').val()==""?'mal':$('#subirfoto').val();
+        urlfotos=urlfotos.substr(12)
+        urlfotos=`public/uploads/${urlfotos}`
+
+        if (id=="mal" || nombre=="mal"|| categoria=="mal"|| precio=="mal"|| marca=="mal") {
+           alert(`Tienes que rellenar todos los campos`) 
+        }
+        else{
+            $.ajax({url: "/anadirarticulo",type: "POST",data: {categoria:categoria,nombre:nombre,precio:precio,marca:marca,urlfoto:urlfotos}});
+        }
+
+    }
+    function añadioferta(){
+        let descripcion =$('#descoferta').val()==""?'mal':$('#descoferta').val();
+        let idproducto =$('#prodforofer').val()==""?'mal':$('#prodforofer').val();
+        let fechainicio =$('#fechainicio').val()==""?'mal':$('#fechainicio').val();
+        let fechafinal =$('#fechafinal').val()==""?'mal':$('#fechafinal').val();
+        let descuento =$('#descuento').val()==""?'mal':$('#descuento').val();
+
+
+        if (descripcion=="mal" || idproducto=="mal"|| fechainicio=="mal"|| fechafinal=="mal"|| descuento=="mal") {
+            alert(`Tienes que rellenar todos los campos`) 
+        }
+        else{
+            $.ajax({url: "/anadirofertas",type: "POST",data: {descripcion:descripcion,idproducto:idproducto,fechainicio:fechainicio,fechafinal:fechafinal,descuento:descuento}});
+        }
+    }
+
+
+        
+    //CAMBIO A OTRA VISTA
+    function verproducto(idcatproducto) {
+        window.open(`/producto?var=${idcatproducto}`, "_self");
+    }
+
+    function verproductos(idcatproducto) {
+        window.open(`/productos?var=${idcatproducto}`, "_self");
+    }
+
+
+
+
+         //si esta logeado 
+         function comprobarlog() {
+        if (localStorage.getItem('nombre')!=null) {
+            id=localStorage.getItem('id')
+            usuario=$.ajax({url:"/logmodusuario", type: "POST",data: {id:id}, async: false})
+            if (usuario.responseJSON[0].rol==1) {
+            $('#usuario').empty()
+            $('#usuario').append(`<a href ="/modificarusuario">${localStorage.getItem('nombre')} </a>`)
+            $('#usuario').append(`<a href ="/pedidos">Pedidos</a>`) 
+            $('#ifadmin').append(`<button id="botonabrir">agregar nuevo producto</button>`);
+            $('#ifadmin').append(`<button id="botonabriroderta">agregar nueva oferta</button>`); 
+
+
+            admin=true;
+            }
+            else{
+            $('#usuario').empty()
+            $('#usuario').append(`<a href ="/modificarusuario">${localStorage.getItem('nombre')} </a>`)
+            $('#usuario').append(`<a href ="/cesta">Cesta </a>`)
+            }
+        }
+    }
+    //abrir y cerrar el modal de creacion de productos
+    function abrirmodal() {
+    
+        $('#botonabrir').click(function(params) {
+        $('.fondo_transparente').css("display", "block");
+        })
+    }
+    function cerrarmodal() {
+        $('.modal_cerrar').click(function(params) {
+        $('.fondo_transparente').css("display", "none");
+        })
+    }
+    
+
+    //abrir y cerrar el modal de creacion de ofertas
+    function abrirmodal2() {
+        $('#botonabriroderta').click(function(params) {
+        $('.fondo_transparente2').css("display", "block");
+        })
+    }
+    function cerrarmodal2() {
+        $('.modal_cerrar2').click(function(params) {
+        $('.fondo_transparente2').css("display", "none");
+        })
+    }
+    function myFunction(x) {
+            x.classList.toggle("change");
+            $("#myDropdown").toggleClass("oculto");
+        }
+
+
+        
+    </script>
+</head>
+
+<body>
+    <div class="navbar">
+        <div id="logoDropdown">
+            <div id="logo">
+                <a href="/"></a>
+            </div>
+            <div id="dropdown" onclick="myFunction(this)">
+                <div id="btnDropdown">
+                    <div class="bar1"></div>
+                    <div class="bar2"></div>
+                    <div class="bar3"></div>    
+                    
+                </div>
+                <div class="dropdown-content oculto" id="myDropdown">
+                    <a onclick="verproductos(8)" class="Prodhijo">Placas Base</a>
+                    <a onclick="verproductos(5)" class="Prodhijo">Procesadores</a>
+                    <a onclick="verproductos(2)" class="Prodhijo">Discos Duros</a>
+                    <a onclick="verproductos(4)" class="Prodhijo">Tarjetas Gráficas</a>
+                    <a onclick="verproductos(6)" class="Prodhijo">Memoria RAM</a>
+                    <a onclick="verproductos(7)" class="Prodhijo">Cajas</a>
+                    <a onclick="verproductos(3)" class="Prodhijo">Fuentes Alimentación</a>
+                </div>
+            </div>
+        </div>
+
+        <!--
+            <button class="dropbtn">Dropdown</button>
+             <div class="dropdown-content" id="myDropdown">
+                <a onclick=verproductos(8) class="Prodhijo">Placas Base</a>
+                <a onclick=verproductos(5) class="Prodhijo">Procesadores</a>
+                <a onclick=verproductos(2) class="Prodhijo">Discos Duros</a>
+                <a onclick=verproductos(4) class="Prodhijo">Tarjetas Gráficas</a>
+                <a onclick=verproductos(6) class="Prodhijo">Memoria RAM</a>
+                <a onclick=verproductos(7) class="Prodhijo">Cajas</a>
+                <a onclick=verproductos(3) class="Prodhijo">Fuentes Alimentación</a>
+            </div>
+    -->
+        <div id="buscar">
+            <input id="buscarvalor" type="search" placeholder="Buscar" size="35" /><button
+                onclick="buscarproducto()"
+                id="btnbuscar"
+            >
+                <img src="/public/iconos/buscar.png" width="20" height="20" />
+            </button>
+        </div>
+
+        <div id="usuario">
+            <a href="/login">Logearse</a>
+            <a href="/register">Registrarse</a>
+        </div>
+    </div>
+
+    <div id="cuerpo" >
+        <div id="buscarprod">
+
+            <div id="bprecio">
+                <label for="rangopreciomin">minimo</label>
+                <input id="rangopreciomin" name="rangopreciomin" type="range" name="numrango" value="0" min="10" max="4000" step="1" />
+                <label for="rangopreciomax">maximo</label>
+                <input id="rangopreciomax" name="rangopreciomax" type="range" name="numrango" value="10000" min="10" max="4000" step="1" />
+                <div>
+                    <i>Desde</i>
+                    <input type="number" id="valormin" min="0" max="9999" value="0" />
+                    <i>hasta</i>
+                    <input type="number" id="valormax"  min="0" max="9999" value="0" />
+                </div>
+            </div>
+            <div id="bmarca">
+                <label for="marcas">Marcas</label>
+                <select id="selectbmarca" name="marcas">
+                
+                  </select>
+            </div>
+            <div id="buscar">
+            <div id="ifadmin">
+            </div>
+            </div>
+        </div>
+        
+        <div class="fondo_transparente">
+            <div class="modal">
+                <div class="modal_cerrar">
+                    <span>x</span>
+                </div>
+                <div class="modal_titulo">VENTANA MODAL</div>
+                <form action="/putimagen" method="post" enctype="multipart/form-data">
+                <div class="modal_mensaje">
+                    <table id="tablamodal">
+                        
+                        <tr>
+                        <td><label for="">Nombre</label></td>
+                        <td><input id="nomart" type="text"/></td>
+                        </tr>
+                        
+                        <tr>
+                            <td><label for="">categoria</label></td>
+                            <td><select id="catart" name="Marca">
+                                <option value="2" >Discos Duros</option>
+                                <option value="3">Fuentes Alimentación</option>
+                                <option value="4">Tarjetas Gráficas</option>
+                                <option value="5" >Procesadores</option>
+                                <option value="6">Memoria RAM</option>
+                                <option value="7">Cajas</option>
+                                <option value="8" >placa base</option>
+
+                            </select></td>
+                        </tr>
+
+                        <tr>
+                        <td><label for="">Precio</label></td>
+                        <td><input id="precart" type="number"/></td>
+                        </tr>
+        
+                        <tr>
+                        <td><label for="">Marca</label></td>
+                        <td><input id="marcart" type="text"/></td>
+                        </tr>
+                        <tr><td colspan="2">
+                            
+                                <input type="file" id="subirfoto" name="avatar" />
+
+                        </td></tr>
+        
+                    </table>
+                </div>
+                <div class="modal_botones">
+                    
+                    <input id="foto" type="submit" onclick="añadirarticulo()" value="Submit">
+                </div>
+            </form>
+            </div>
+        </div>
+
+
+        <div class=" fondo_transparente2">
+            <div class="modal2">
+                <div class="modal_cerrar2">
+                    <span>x</span>
+                </div>
+                <div class="modal_titulo2">VENTANA MODAL</div>
+                <div class="modal_mensaje2">
+                    
+                    <table id="tablamodal2">
+                        <tr>
+                            <td><label >descripcion</label></td>
+                            <td><input id="descoferta" type="text"/></td>
+                        </tr>
+                        <tr>
+                            <td><label >producto</label></td>
+                            <td>
+                            <select id="prodforofer">
+                                
+                            </select>
+                        </td>
+                        </tr>
+                        <tr>
+                        <td><label for="">fecha de inicio</label></td>
+                        <td><input id="fechainicio" type="date"/></td>
+                        </tr>
+                        <tr>
+                            <td><label for="">fecha de final</label></td>
+                            <td><input id="fechafinal" type="date"/></td>
+                        </tr>
+                        <tr>
+                            <td><label for="">descuento</label></td>
+                            <td><input id="descuento" type="number" min="1" max="100"/></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal_botones2">
+                    
+                    <button class="boton" onclick="añadioferta()">Guardar</button>
+
+                </div>  
+            </div>  
+        </div>  
+
+
+
+       
+
+        <div id="contenido">
+        <div id="ordenar" onchange="Filtrararticulos()">
+            <i>ordenar por </i>
+            <select name="ordenar">
+                <option value="0" selected>nuevo</option>
+                <option value="1">mas barato</option>
+                <option value="2" >mas caro</option>
+                <option value="3">stock</option>
+              </select>
+        </div>   
+        <div id="productos">
+
+        </div> 
+        </div>
+
+
+    </div>
+    <div class="footer">
+
+    <div class="footertitulo">
+            <i>aaaa</i>
+    </div>
+
+    <hr class="separador">
+
+
+    <div class="footercontenido">
+        <div>
+            <h4 class="columnas"><Strong><u>Categorias</u></Strong></h4>
+            <a onclick=verproductos(8) class="columnasfooter">Placas Base</a>
+            <a onclick=verproductos(5) class="columnasfooter">Procesadores</a>
+            <a onclick=verproductos(2) class="columnasfooter">Discos Duros</a>
+            <a onclick=verproductos(4) class="columnasfooter">Tarjetas Gráficas</a>
+            <a onclick=verproductos(6) class="columnasfooter">Memoria RAM</a>
+            <a onclick=verproductos(7) class="columnasfooter">Cajas</a>
+            <a onclick=verproductos(3) class="columnasfooter">Fuentes Alimentación</a>
+            </div>
+
+        <div>
+        </div>
+    </div>
+
+    <div class="footerfinal">
+        <div>adasdasdasd</div>
+    </div>
+</div>
+
+    
+</body>
+
+
+<script>
+var slidermin = document.getElementById("rangopreciomin");
+var slidermax = document.getElementById("rangopreciomax");
+
+
+$("#valormin").val(slidermin.value);
+$("#valormax").val(slidermax.value);
+
+
+slidermin.oninput = function() {
+    $("#valormin").val(this.value);
+
+}
+
+slidermax.oninput = function() {
+    $("#valormax").val(this.value);
+
+}
+
+$(".dropbtn").hover(function () {
+    mostrar($("#myDropdown")[0]);
+    })
+$("#myDropdown").hover(false,function () {
+    ocultar($("#myDropdown")[0]);
+    })
+
+function mostrar(elemento) {
+    elemento.classList.add('show');
+}
+
+function ocultar(elemento) {
+    elemento.classList.remove('show');
+}
+</script>
+
+</html>

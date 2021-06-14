@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<script>
+
+    //registrar usuario
+    function registrarusuario() {
+
+        password=$('#passwd').val()
+        correo=$('#correo').val()
+        nombre=$('#nombre').val()
+        let valorok =validar_password(password)
+        if (correo==null||correo==""||nombre==null||nombre=="") {
+            $.jGrowl('tienes que rellenar todos los campos', { life:3000,theme:'growl-error'});
+        }
+        else{
+            if (valorok) {
+                usuario=$.ajax({url:"/registerusuario", type: "POST",data: {nombre : nombre,passwd : password,correo:correo}, async: false})
+                if (usuario.responseJSON.error) {
+                    $.jGrowl(usuario.responseJSON.error, { life:10000,theme:'growl-error'});
+                    nombre=$('#nombre').val('')
+                    } 
+                else{ 
+                    window.location.replace("/login");
+                }   
+            }
+            else{
+                $.jGrowl('La contraseña no cumple los requisitos', { life:1000,theme:'growl-error'});
+            }
+        }
+
+    }
+
+    function validar_password(contrasenna)
+		{
+			if(contrasenna.length >= 8)
+			{		
+				var mayuscula = false;
+				var minuscula = false;
+				var numero = false;
+				var caracter_raro = false;
+				
+				for(var i = 0;i<contrasenna.length;i++)
+				{
+					if(contrasenna.charCodeAt(i) >= 65 && contrasenna.charCodeAt(i) <= 90)
+					{
+						mayuscula = true;
+					}
+					else if(contrasenna.charCodeAt(i) >= 97 && contrasenna.charCodeAt(i) <= 122)
+					{
+						minuscula = true;
+					}
+					else if(contrasenna.charCodeAt(i) >= 48 && contrasenna.charCodeAt(i) <= 57)
+					{
+						numero = true;
+					}
+					else
+					{
+						caracter_raro = true;
+					}
+				}
+				if(mayuscula == true && minuscula == true && caracter_raro == true && numero == true)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+
+</script>
+<head>
+    <link href="/public/css/register.css" rel="stylesheet" type="text/css">
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="/public/jquery.jgrowl.min.js"></script>
+<link href="/public/jgrowl.css" rel="stylesheet" type="text/css">
+
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table class="contenedor">
+        <tr>
+        
+        <td  colspan="2"  ><h1 id="registrarse">Crea una cuenta ahora</h1></td>
+        </tr>
+        <tr>
+            <td rowspan="6"><img src="" width="250" alt=""></td>
+            <td><input type="text" id="nombre" placeholder="Usuario"></td>
+        </tr>
+        <tr>
+            <td><input type="text" id="correo" placeholder="Correo electronico"></td>
+        </tr>
+        <tr>
+            <td><input type="password" id="passwd" placeholder="Contraseña"></td>
+        </tr>
+        <tr>
+        
+            <td class="lista">
+                <p>Para una contraseña segura debe tener:</p>
+                <ul>
+                    
+                    <li>Una letra minuscula</li>
+                    <li>Una letra Mayuscula</li>
+                    <li>Un numero</li>
+                    <li>Un caracter especial</li>
+                    <li>Un minimo de 8 caracteres</li>
+                  </ul>
+            </td>
+
+        </tr>
+
+        <tr>
+            <td id="divenviar"><button id="enviar" onclick="registrarusuario()">enviar</button></td>
+        </tr>
+    </table>
+</body>
+</html>

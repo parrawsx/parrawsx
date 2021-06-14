@@ -1,0 +1,38 @@
+.contenedor{
+    background-color: white;
+    padding: 4%;
+    margin: 0 auto;
+    margin-top: 10%;
+
+}
+
+#logearse{
+    font-size: 35px;
+    color: red;
+}
+body{
+    background-color: rgb(233, 233, 233) ;
+}
+
+#enviar{
+    font-size: 30px;
+    background-color: rgb(245, 12, 12);
+    color: white;
+    padding: 0 auto;
+    border-radius: 5%;
+    
+}
+
+#divenviar{ 
+  text-align: center;
+}
+#passwd{
+    font-size: 17px;
+}
+#nombre{
+    font-size: 17px;
+}
+
+button{
+    cursor:pointer;
+}

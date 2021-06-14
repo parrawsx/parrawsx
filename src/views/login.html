@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+window.onload = function() {
+    };
+    //logear
+    function login(){
+        nombre=$('#nombre').val()
+        password=$('#passwd').val()
+        usuario=objetoselect=$.ajax({url:"/loginusuario", type: "POST",data: {nombre : nombre,passwd : password}, async: false})
+        if (usuario.responseJSON.message=="error") {
+            $.jGrowl(usuario.responseJSON.error, { life:10000,theme:'growl-error'});
+
+        }
+        else{
+            if (usuario.responseJSON.length==0) {    
+                //$.growl.error({ message: "The kitten is attacking!" });
+                $.jGrowl('El usuario o la contraseña estan mal', { life:10000,theme:'growl-error'});
+
+                nombre=$('#nombre').val("")
+                password=$('#passwd').val("")
+            }
+            else{
+                localStorage.clear();
+                localStorage.setItem('id', usuario.responseJSON[0].id);
+                localStorage.setItem('nombre', usuario.responseJSON[0].nickname);
+                localStorage.setItem('correo', usuario.responseJSON[0].correo);
+                localStorage.setItem('imagen', usuario.responseJSON[0].imagen);
+                window.history.go(-1); 
+            }
+ 
+        }
+    }
+</script>
+<head>
+    <link href="/public/css/login.css" rel="stylesheet" type="text/css">
+
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/public/jquery.jgrowl.min.js"></script>
+    <link href="/public/jgrowl.css" rel="stylesheet" type="text/css">
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div >
+        <table class="contenedor">
+            <tr>
+                <td><h1 id="logearse">Inicia sesion</h1></td>
+            </tr>
+            <tr>
+                <td><input type="text" id="nombre" placeholder="Usuario"></td>
+            </tr>
+            <tr>
+                <td><input type="password" id="passwd" placeholder="Contraseña"></td>
+            </tr>
+            <tr >
+                <td id="divenviar"><button id="enviar" onclick="login()">enviar</button></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+body{
+   background-color: rgb(233, 233, 233) ;
+}
+.contenedor{
+    text-align: center;
+    padding: 5%;
+    padding-bottom: 3%;
+    background-color: white;
+    margin: 0 auto;
+    margin-top: 5%;
+
+}
+.lista{
+    font-size: 12px;
+
+}
+
+#registrarse{
+    font-size: 35px;
+    color: red;
+    text-align:center;
+
+}
+#enviar{
+    font-size: 30px;
+    background-color: rgb(245, 12, 12);
+    color: white;
+    border-radius: 5%;
+    text-align: center;
+}
+#enviar :hover{
+    background-color: rgb(157, 157, 157);
+}
+
+#divenviar{
+    padding-top: 10%;
+    text-align: center;
+}
+
+#passwd{
+    font-size: 17px;
+}
+#nombre{
+    font-size: 17px;
+}
+#correo{
+    font-size: 17px;
+
+}
+
+#atrasdiv{
+    padding-left: 95%;
+}
+
+#atras{
+
+    font-size: 20px;
+    background-color: rgb(245, 12, 12);
+    color: white;
+    border-radius: 5%;
+    text-align: right;
+}
+button{
+    cursor:pointer;
+}
+ul{
+width: 40%;
+margin: auto;
+text-align: left;
+}

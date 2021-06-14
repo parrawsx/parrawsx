@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--css-->
+    <link href="/public/css/productos.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/base.css" rel="stylesheet"  type="text/css">
+    <link href="/public/css/normalizador.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/reseteador.css" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/public/jquery.jgrowl.min.js"></script>
+    <link href="/public/jgrowl.css" rel="stylesheet" type="text/css">
+
+    <!--fin-->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>algo</title>
+
+    <script>
+    //funciones al abrir vista
+    window.onload = function() {
+        comprobarlog() ;
+        rellenarselectusuarios();  
+        Filtrarpedidos();
+
+    };
+
+
+    //variables de la vista
+    var admin=false;
+    var objetoselect=[];
+    var urlparam =getparameterurl('var');
+    var arrayusuario=[];
+    var pedidos=[];
+    var arrayordernar= [
+        {id:0,value :'fecha'},
+        {id:1,value: 'precio asc'},
+        {id:2,value: 'precio desc'},
+        {id:3,value: 'stock desc'}
+    ]
+
+    //rellenar un select con todos los usuarios
+    function rellenarselectusuarios(){
+        $('#usuarios').empty();
+        
+        arrayusuario= [];
+        arrayusuario=$.ajax({url:"/getusuarios", type: "GET", async: false})
+        arrayusuario=arrayusuario.responseJSON;
+        x=0;
+        $('#usuarios').append(`<option value="-1" selected>Todos</option>`);
+    
+        while (x<arrayusuario.length) {
+            $('#usuarios').append(`<option value="${arrayusuario[x].id}">${arrayusuario[x].nickname}</option>`);
+            x=x+1;
+        }
+
+    }
+
+
+    //obtener param url
+    function getparameterurl(name){
+            
+            let url = window.location.href
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+            if (!results) return null;
+             if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    
+            }
+    //=======================================================================    
+
+
+
+    //Filtrar los pedidos de la tienda
+    function  Filtrarpedidos(){
+        debugger
+        let PrecioMax = $('#valormax').val();
+        let PrecioMin =$('#valormin').val();
+        let usuario =$('#usuarios option:selected').val()==-1?"%":$('#usuarios option:selected').text();
+
+        let estado =$('#estados option:selected').val()==-1?"%":$('#estados option:selected').text();
+
+        objetoselect=[];
+        objetoselect=$.ajax({url:"/Filtrarpedidos", type: "POST",data: {PrecioMax:PrecioMax,PrecioMin:PrecioMin,usuario:usuario,Estado:estado}, async: false})   
+        
+        $("#productos").empty();
+
+        $('#productos').append(`
+                <div id="pedidotitulos">
+                <div class="pedido" style ="border:none ;border-bottom:1px black solid;  font-weight: bold;">
+                <div>ID pedido</div>
+                <div>nombre usuario</div>
+                <div>Precio </div>
+                <div>Estado</div>
+                <div></div>
+            </div></div>`);
+
+        let x=0;
+
+            while (x < objetoselect.responseJSON.length) {
+                let estado = 0;
+                if (objetoselect.responseJSON[x].Descripcion=="Pendiente de pago") {
+                    estado=0;
+                }
+                if (objetoselect.responseJSON[x].Descripcion=="Tramitando") {
+                    estado=1;
+                }
+                if (objetoselect.responseJSON[x].Descripcion=="Enviado") {
+                    estado=2;
+                }
+                if (objetoselect.responseJSON[x].Descripcion=="Recibido") {
+                    estado=3;
+                }
+                if (objetoselect.responseJSON[x].Descripcion=="Perdido") {
+                    estado=4;
+                }
+
+                $('#productos').append(`
+                <div id="pedido${objetoselect.responseJSON[x].Id_pedido}">
+                <div class="pedido">
+                <div>${objetoselect.responseJSON[x].Id_pedido}</div>
+                <div>${objetoselect.responseJSON[x].nickname}</div>
+                <div>${objetoselect.responseJSON[0].precio}</div>
+                <div> 
+                    <select id="pedido${objetoselect.responseJSON[x].Id_pedido}estados">
+                        <option value="0" >Pendiente de pago</option>
+                        <option value="1" >Tramitando</option>
+                        <option value="2">Enviado</option>
+                        <option value="3" >Recibido</option>
+                        <option value="4">Perdido</option>
+                    </select>
+                </div>
+                <div class="botonpedido"><button onclick="editarpedido(${objetoselect.responseJSON[x].Id_pedido},${x})">tramitar</button></div>
+            </div></div>`);
+
+            $(`#pedido${objetoselect.responseJSON[x].Id_pedido}estados`).val(estado)
+
+            x=x+1;
+            }     
+            
+    };
+        
+    //editar los pedidos
+    function editarpedido(idpedido,index){
+        estado=$(`#pedido${objetoselect.responseJSON[index].Id_pedido}estados option:selected`).text();
+        console.log(estado=="Tramitando")
+        $.ajax({url:"/cambiarestadopedido", type: "POST",data: {Id_pedido:idpedido,estado:estado}, async: false})
+        
+        if (true) {
+            let correo=localStorage.getItem('correo');
+            //
+            let cabecera=`Actualizacion del pedido ${idpedido}`;
+            let texto=false;
+            if (estado=="Tramitando") {
+                texto=`El pedido  ${idpedido} esta siendo tramitado `;
+            }
+            if (estado=="Enviado") {
+                texto=`El pedido  ${idpedido} esta siendo enviado `;
+
+            }
+            if (estado=="Recibido") {
+                texto=`El pedido  ${idpedido} ha sido recibido `;
+
+            }
+            if (estado=="Perdido") {
+                texto=`El pedido  ${idpedido} se ha perdido `;
+
+            }
+            if (texto!=false) {
+                $.ajax({url:"/email", type: "POST",data: {correo:correo,cabecera:cabecera,texto:texto}, async: false})
+            }
+        }
+
+    }
+
+
+
+
+
+         //si esta logeado 
+         function comprobarlog() {
+        if (localStorage.getItem('nombre')!=null) {
+            id=localStorage.getItem('id')
+            usuario=$.ajax({url:"/logmodusuario", type: "POST",data: {id:id}, async: false})
+            if (usuario.responseJSON[0].rol==1) {
+            $('#usuario').empty()
+            $('#usuario').append(`<a href ="/modificarusuario">${localStorage.getItem('nombre')} </a>`)
+            $('#usuario').append(`<a href ="/pedidos">Pedidos</a>`) 
+            admin=true;
+            }
+            else{
+            window.location.replace("/");
+            }
+        }
+    }
+        
+    function buscarproducto() {
+        if ($('#buscarvalor').val()) {
+            window.open(`/productos?busqueda=${$('#buscarvalor').val()}`, "_self");
+
+        }
+        else{
+            $.jGrowl('No ha escrito nada para buscar', { life:10000,theme:'growl-error'});
+        }
+    }
+    function verproductos(idcatproducto) {
+        window.open(`/productos?var=${idcatproducto}`, "_self");
+    }
+    function myFunction(x) {
+            x.classList.toggle("change");
+            $("#myDropdown").toggleClass("oculto");
+        }
+
+    </script>
+</head>
+
+<body>
+    <div class="navbar">
+        <div id="logoDropdown">
+            <div id="logo">
+                <a href="/"></a>
+            </div>
+            <div id="dropdown" onclick="myFunction(this)">
+                <div id="btnDropdown">
+                    <div class="bar1"></div>
+                    <div class="bar2"></div>
+                    <div class="bar3"></div>    
+                    
+                </div>
+                <div class="dropdown-content oculto" id="myDropdown">
+                    <a onclick="verproductos(8)" class="Prodhijo">Placas Base</a>
+                    <a onclick="verproductos(5)" class="Prodhijo">Procesadores</a>
+                    <a onclick="verproductos(2)" class="Prodhijo">Discos Duros</a>
+                    <a onclick="verproductos(4)" class="Prodhijo">Tarjetas Gráficas</a>
+                    <a onclick="verproductos(6)" class="Prodhijo">Memoria RAM</a>
+                    <a onclick="verproductos(7)" class="Prodhijo">Cajas</a>
+                    <a onclick="verproductos(3)" class="Prodhijo">Fuentes Alimentación</a>
+                </div>
+            </div>
+        </div>
+
+        <!--
+            <button class="dropbtn">Dropdown</button>
+             <div class="dropdown-content" id="myDropdown">
+                <a onclick=verproductos(8) class="Prodhijo">Placas Base</a>
+                <a onclick=verproductos(5) class="Prodhijo">Procesadores</a>
+                <a onclick=verproductos(2) class="Prodhijo">Discos Duros</a>
+                <a onclick=verproductos(4) class="Prodhijo">Tarjetas Gráficas</a>
+                <a onclick=verproductos(6) class="Prodhijo">Memoria RAM</a>
+                <a onclick=verproductos(7) class="Prodhijo">Cajas</a>
+                <a onclick=verproductos(3) class="Prodhijo">Fuentes Alimentación</a>
+            </div>
+    -->
+        <div id="buscar">
+            <input id="buscarvalor" type="search" placeholder="Buscar" size="35" /><button
+                onclick="buscarproducto()"
+                id="btnbuscar"
+            >
+                <img src="/public/iconos/buscar.png" width="20" height="20" />
+            </button>
+        </div>
+
+        <div id="usuario">
+            <a href="/login">Logearse</a>
+            <a href="/register">Registrarse</a>
+        </div>
+    </div>
+
+    <div id="cuerpo" >
+        <div id="buscarprod">
+
+            <div id="bprecio">
+                <label for="rangopreciomin">minimo</label>
+                <input id="rangopreciomin" name="rangopreciomin" type="range" name="numrango" value="0" min="10" max="9999" step="1" />
+                <label for="rangopreciomax">maximo</label>
+                <input id="rangopreciomax" name="rangopreciomax" type="range" name="numrango" value="10000" min="10" max="9999" step="1" />
+                <se id="todosusuarios" >
+                <div>
+                    <i>Desde</i>
+                    <input type="number" id="valormin" min="0" max="9999" value="0" />
+                    <i>hasta</i>
+                    <input type="number" id="valormax"  min="0" max="9999" value="0" />
+                </div>
+            </div>
+            <div>
+                <select id="usuarios">
+                </select>
+            </div>
+            <div>
+                <select id="estados">
+                    <option value="-1" selected>Todos</option>
+                    <option value="0" >Tramitando</option>
+                    <option value="1">Enviado</option>
+                    <option value="2" >Recibido</option>
+                    <option value="3">Perdido</option>
+
+                </select>
+            </div>
+
+            <div id="buscarfiltrar">
+            <button onclick="Filtrarpedidos()">buscar</button>
+            <div id="ifadmin">
+            </div>
+            </div>
+        </div>
+    
+        <div id="contenido">
+        <div id="productos">
+
+        </div> 
+        </div>
+
+
+    </div>
+    <div class="footer">
+
+    <div class="footertitulo">
+            <i>aaaa</i>
+    </div>
+
+    <hr class="separador">
+
+
+    <div class="footercontenido">
+        <div>
+            <h4 class="columnas"><Strong><u>Categorias</u></Strong></h4>
+            <a onclick=verproductos(8) class="columnasfooter">Placas Base</a>
+            <a onclick=verproductos(5) class="columnasfooter">Procesadores</a>
+            <a onclick=verproductos(2) class="columnasfooter">Discos Duros</a>
+            <a onclick=verproductos(4) class="columnasfooter">Tarjetas Gráficas</a>
+            <a onclick=verproductos(6) class="columnasfooter">Memoria RAM</a>
+            <a onclick=verproductos(7) class="columnasfooter">Cajas</a>
+            <a onclick=verproductos(3) class="columnasfooter">Fuentes Alimentación</a>
+            </div>
+
+        <div>
+        </div>
+    </div>
+
+    <div class="footerfinal">
+        <div>adasdasdasd</div>
+    </div>
+</div>
+
+    
+</body>
+
+
+<script>
+var slidermin = document.getElementById("rangopreciomin");
+var slidermax = document.getElementById("rangopreciomax");
+
+
+$("#valormin").val(slidermin.value);
+$("#valormax").val(slidermax.value);
+
+ // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slidermin.oninput = function() {
+    $("#valormin").val(this.value);
+
+}
+slidermax.oninput = function() {
+    $("#valormax").val(this.value);
+
+}
+
+$(".dropbtn").hover(function () {
+    mostrar($("#myDropdown")[0]);
+    })
+$("#myDropdown").hover(false,function () {
+    ocultar($("#myDropdown")[0]);
+    })
+
+function mostrar(elemento) {
+    elemento.classList.add('show');
+}
+
+function ocultar(elemento) {
+    elemento.classList.remove('show');
+}
+</script>
+
+</html>

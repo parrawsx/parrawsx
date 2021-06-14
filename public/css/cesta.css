@@ -1,0 +1,88 @@
+
+  /*Cuerpo*/
+  #cuerpo{
+    border :solid;
+    padding-top: 2%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 25px;
+  }
+  #buscarprod{
+    grid-column: 1/1;
+
+    padding-left: 2%;
+    border: 1px solid ;
+    font-size: 15px;
+  }
+  #buscarprod > div{
+      padding-top: 3%;
+    font-size: 15px;
+  }
+  #bprecio {
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+
+  }
+  #bprecio >input{
+    width: 65%;
+
+  }
+  #bprecio >div>input{
+    width : 14%; 
+    height: 50%;
+  }
+  
+#contenido{
+    grid-column: 1/5;
+    grid-row: 1 ;
+    display: grid;
+    padding-right: 3%;
+    padding-left: 1%;
+}
+
+.producto{
+    border-style: solid;
+    border-width: 1px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+}
+#total{
+  padding-right: 30% ;
+    grid-column: 4/5;
+
+}
+#contotal{
+border: 1px solid black;
+padding:50px ;
+background-color:rgb(255, 232, 232);
+}
+#textocomprar{
+  padding:0 50px ;
+}
+
+.informacion{
+    color: black;
+    grid-column: 2/7;
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+}
+.igualar{
+padding: 0%;
+}
+.informacion > p {
+    margin-top: 2%;
+}
+a{
+    text-decoration:none;
+}
+
+#nocesta{
+  grid-column: 2/4;
+  text-align: center;
+  padding: 10%;
+}
+#textonocesta{
+  font-size: 40px;
+  font-weight: bold;
+}

@@ -1,0 +1,73 @@
+{
+	"info": {
+		"_postman_id": "0083b375-7d46-40ae-bd97-3708315ce66b",
+		"name": "proyecto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getVersion",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8010/getVersionId"
+			},
+			"response": []
+		},
+		{
+			"name": "getObtenerofertas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8010/getVersionId"
+			},
+			"response": []
+		},
+		{
+			"name": "getObtenerarticulos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8010/getVersionId"
+			},
+			"response": []
+		},
+		{
+			"name": "PostFiltroarticulo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "http://localhost:8010/getVersionId"
+			},
+			"response": []
+		},
+		{
+			"name": "getmarcas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8010/getVersionId"
+			},
+			"response": []
+		},
+		{
+			"name": "getcategoria",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8010/getVersionId"
+			},
+			"response": []
+		},
+		{
+			"name": "putimagen",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": "http://localhost:8010/putimagen"
+			},
+			"response": []
+		}
+	]
+
+}
