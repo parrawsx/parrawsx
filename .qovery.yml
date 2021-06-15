@@ -1,0 +1,15 @@
+---
+application:
+  name: "parrawsx"
+  project: "proyecto tienda"
+  organization: "QoveryCommunity"
+databases:
+- type: "MYSQL"
+  name: "proyecto_tienda"
+  version: "8.0"
+routers:
+- name: "main-parrawsx"
+  routes:
+  - application_name: "parrawsx"
+    paths:
+    - "/*"
