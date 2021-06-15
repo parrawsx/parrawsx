@@ -1,0 +1,82 @@
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('1', '2', 'Corsair MP400', '109.840', 'Corsair', 'public/imagenes/discosduros/CorsairMP400.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('2', '2', 'Toshiba RD500', '109.910', 'Corsair', 'public/imagenes/discosduros/ToshibaRD500.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('3', '2', 'WD Red', '120.210', 'Corsair', 'public/imagenes/discosduros/WDRed.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('4', '3', 'Corsair RM850', '103.220', 'Corsair', 'public/imagenes/fuentealimentacion/CorsairRM850.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('5', '3', 'Nox Urano VX', '58.350', 'Nox', 'public/imagenes/fuentealimentacion/NoxUranoVX.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('6', '3', 'Corsair RMx Series RM650x', '104.000', 'Corsair', 'public/imagenes/fuentealimentacion/CorsairRMxSeriesRM650x.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('7', '4', 'Radeon RX 6700 XT', '1550.000', 'AMD', 'public/imagenes/grafica/RadeonRX6700XT.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('8', '4', 'GeForce RTX 2060', '500.420', 'Nvidia', 'public/imagenes/grafica/GeForceRTX2060.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('9', '4', 'GeForce GT 1030', '90.000', 'Nvidia', 'public/imagenes/grafica/GeForceGT1030.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('10', '4', 'Radeon RX 5500', '610.000', 'AMD', 'public/imagenes/grafica/RadeonRX550.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('11', '5', 'Ryzen 5 3600', '200.000', 'AMD', 'public/imagenes/Procesador/ryzen53600.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('12', '5', ' Ryzen 3 1200', '80.000', 'AMD', 'public/imagenes/Procesador/ryzen31200.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('13', '5', 'Core i3-10100', '154.900', 'INTEL', 'public/imagenes/Procesador/intelcorei310100.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('14', '5', 'Core i5-10600K', '199.960', 'INTEL', 'public/imagenes/Procesador/intelcorei510600k.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('15', '6', 'HyperX Fury Black', '96.000', 'Kingston', 'public/imagenes/ram/VengeanceRGBPro.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('16', '6', 'Vengeance RGB Pro', '129.000', 'Corsair', 'public/imagenes/ram/HyperXFuryBlack.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('17', '6', 'Classic Black', '105.000', 'Corsair', 'public/imagenes/ram/ClassicBlack.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('18', '7', 'Level 20 MT', '85.000', 'Thermaltake ', 'public/imagenes/torres/CarbideSpec-Delta.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('19', '7', 'V150', '45.000', 'Thermaltake ', 'public/imagenes/torres/V150.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('20', '7', 'Carbide Spec-Delta', '82.000', 'Corsair', 'public/imagenes/torres/CarbideSpec-Delta.jpg', '1', '2021-05-21 21:30:20'
+);
+INSERT INTO productos(`ID_producto`,`id_categoria`,`Nombre`,`Precio`,`Marca`,`Foto_ruta`,`Activo`,`Fecha`)
+VALUES('21', '7', 'MasterBox MB511', '80.000', 'Cooler Master', 'public/imagenes/torres/MasterBoxMB511.jpg', '1', '2021-05-21 21:30:20'
+);
+
+
+
+INSERT INTO usuario
+(`id`,
+`nickname`,
+`passwd`,
+`correo`,
+`rol`)
+VALUES('1', 'AdministradorPrueba', '7f23989e4b3d8f3ab369970470061d4504757b9da1be6215ee871efaf718c0705f4f9fb869f6b3f4836e04ed8d43442bb930ce80d01ee549cb0ee0c3fa4d82c59adaf85b0ff333259c2f45cb78ef8291cf7ad95d0ac0f36ddee3b2219163415082707d6f47b3ed6420', 'parrawsx@gmail.com', '1');
+
+
+
+
+
+
+
+
+

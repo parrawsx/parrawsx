@@ -8,7 +8,7 @@
 
 #logearse{
     font-size: 35px;
-    color: red;
+    color: rgb(173, 173, 173);
 }
 body{
     background-color: rgb(233, 233, 233) ;
@@ -16,14 +16,20 @@ body{
 
 #enviar{
     font-size: 30px;
-    background-color: rgb(245, 12, 12);
+    text-align: center;
+    background: white;
+    color: rgb(43, 43, 43);
+    text-decoration: none;
+    border-radius: 25px;
+    border: 1px solid rgb(56, 56, 56);
+}
+#enviar:hover {
+    background: rgb(114, 114, 114);
     color: white;
-    padding: 0 auto;
-    border-radius: 5%;
-    
 }
 
 #divenviar{ 
+    padding-top: 4%;
   text-align: center;
 }
 #passwd{

@@ -5,7 +5,7 @@
     <!--css-->
     <link href="/public/css/articulo.css" rel="stylesheet" type="text/css">
     <link href="/public/css/base.css" rel="stylesheet"  type="text/css">
-    <link href="/public/css/normalizador.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/normalizador.css" rel="stylesheet" type="text/css"> 
     <link href="/public/css/reseteador.css" rel="stylesheet" type="text/css">
     
 
@@ -21,7 +21,7 @@
 </head>
 
 <script>
-    //funciones al abrir vista
+    //funciones al abrir vista 
     window.onload = function() { 
         comprobarlog();
         Obtenerarticulos();
@@ -123,7 +123,7 @@
                 <h1>${Precio}€</h1>
                 <hr>
                 <p>Stock: ${obj[0].stock}</p>
-                <label>cantidad <input id="cantidadcomprar" type="number" value="1" min="1" max="${obj[0].stock}"></label>
+                <label id="labelcantidad">cantidad <input id="cantidadcomprar" type="number" value="1" min="1" max="${obj[0].stock}"></label>
                 <button  id="comprar" onclick="Tipopedido()">comprar</button>
                 <button id="cesta" onclick="Tipocesta()">añadir a la cesta</button>
             </div>`)

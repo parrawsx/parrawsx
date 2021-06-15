@@ -11,7 +11,7 @@ window.onload = function() {
         if (usuario.responseJSON.message=="error") {
             $.jGrowl(usuario.responseJSON.error, { life:10000,theme:'growl-error'});
 
-        }
+        } 
         else{
             if (usuario.responseJSON.length==0) {    
                 //$.growl.error({ message: "The kitten is attacking!" });

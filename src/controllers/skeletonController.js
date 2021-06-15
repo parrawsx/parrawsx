@@ -877,7 +877,7 @@ function buscar (req,res){
 
         let Busqueda=`%${req.body.Busqueda}%`;
 
-        let accion =`select * from productos where nombre like "${Busqueda}" or marca like "${Busqueda}" and  activo = true ;`;
+        let accion =`select productos.*,count(stockproductos.id_stock) as stock from productos ,stockproductos where stockproductos.id_articulo=productos.ID_producto  and (nombre like "${Busqueda}" or marca like "${Busqueda}") and activo = true group by ID_producto `;
 
         if (err) {   
             console.log('mal')
@@ -888,39 +888,12 @@ function buscar (req,res){
                 if (err) console.log(err);
                     let parseado =JSON.stringify(result)
                     parseado=JSON.parse(parseado) 
-
                     return res.status(200).json(parseado);
             })
             }
     });
 }; 
 
-
-
-function buscar (req,res){
-    req.getConnection((err,con) =>{
-
-        let Busqueda=`%${req.body.Busqueda}%`;
-
-        let accion =`select * from productos where nombre like "${Busqueda}" or marca like "${Busqueda}" and  activo = true ;`;
-
-
-
-        if (err) {   
-            console.log('mal')
-        }
-
-        else{
-            con.query(accion,(err, result) => {
-                if (err) console.log(err);
-                    let parseado =JSON.stringify(result)
-                    parseado=JSON.parse(parseado) 
-
-                    return res.status(200).json(parseado);
-            })
-            }
-    });
-}
 
 
 //POST

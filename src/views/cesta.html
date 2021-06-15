@@ -69,7 +69,7 @@
     function eliminarproducto(idart){
         let idusuario= localStorage.getItem('id');
         let producto=idart;
-        
+         
         prueba=$.ajax({url:"/elimnarprodcesta", type: "POST",data: {usuario:idusuario,producto:producto}, async: false})
         location.reload();
     }

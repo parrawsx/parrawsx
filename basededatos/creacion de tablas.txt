@@ -1,0 +1,90 @@
+CREATE TABLE `atributo` (
+  `ID_Atributo` int NOT NULL AUTO_INCREMENT,
+  `id_categoria` varchar(45) DEFAULT NULL,
+  `Nombre` varchar(45) DEFAULT NULL,
+  `Valor` varchar(45) DEFAULT NULL,
+  `nombreproducto` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ID_Atributo`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `categoria` (
+  `id_categoria` int NOT NULL AUTO_INCREMENT,
+  `Nombre` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id_categoria`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `cesta` (
+  `idCesta` int NOT NULL AUTO_INCREMENT,
+  `idusuario` varchar(255) NOT NULL,
+  `idproducto` varchar(255) NOT NULL,
+  `Precio` varchar(45) NOT NULL,
+  PRIMARY KEY (`idCesta`)
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `estado` (
+  `id_estado` int NOT NULL AUTO_INCREMENT,
+  `Id_pedido` int DEFAULT NULL,
+  `Descripcion` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id_estado`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `oferta` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(70) DEFAULT NULL,
+  `ID_producto` int DEFAULT NULL,
+  `fechInicio` date DEFAULT NULL,
+  `Fechafinal` date DEFAULT NULL,
+  `descuento` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `pedido` (
+  `Id_pedido` int NOT NULL AUTO_INCREMENT,
+  `id_usuario` int NOT NULL,
+  PRIMARY KEY (`Id_pedido`)
+) ENGINE=InnoDB AUTO_INCREMENT=154 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `pedidoproductos` (
+  `Id_pedido` int NOT NULL,
+  `ID_producto` int NOT NULL,
+  `cantidad` int NOT NULL,
+  `Precio` int NOT NULL,
+  PRIMARY KEY (`Id_pedido`,`ID_producto`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `productos` (
+  `ID_producto` int NOT NULL AUTO_INCREMENT,
+  `id_categoria` int NOT NULL,
+  `Nombre` varchar(45) NOT NULL,
+  `Precio` decimal(10,3) NOT NULL,
+  `Marca` varchar(45) NOT NULL,
+  `Foto_ruta` varchar(80) DEFAULT NULL,
+  `Activo` tinyint NOT NULL,
+  `Fecha` datetime NOT NULL,
+  PRIMARY KEY (`ID_producto`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `roles` (
+    `Id_rol` INT NOT NULL AUTO_INCREMENT,
+    `nombre` VARCHAR(255) DEFAULT NULL,
+    PRIMARY KEY (`Id_rol`)
+)  ENGINE=INNODB AUTO_INCREMENT=9 DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_0900_AI_CI;
+
+CREATE TABLE `stockproductos` (
+  `id_stock` int NOT NULL AUTO_INCREMENT,
+  `id_articulo` int NOT NULL,
+  PRIMARY KEY (`id_stock`)
+) ENGINE=InnoDB AUTO_INCREMENT=217 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `usuario` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nickname` varchar(255) NOT NULL,
+  `passwd` varchar(255) NOT NULL,
+  `correo` varchar(255) NOT NULL,
+  `rol` int NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `nickname_UNIQUE` (`nickname`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+

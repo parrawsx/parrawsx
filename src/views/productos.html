@@ -12,7 +12,7 @@
 <script src="/public/jquery.jgrowl.min.js"></script>
 <link href="/public/jgrowl.css" rel="stylesheet" type="text/css">
 
-
+ 
     <!--fin-->
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -112,6 +112,9 @@
 
     function borrarfiltrar() {
         $('#buscarprod').empty();
+        $('div').remove('#buscarprod');
+        $('#contenido').css("padding-left"," 10%")
+        $('#contenido').css("grid-column"," 1/5")
         
     }
     function  rellenarselectmarca(){
@@ -318,7 +321,7 @@ $("#rangopreciomax").change(function() {
             if (usuario.responseJSON[0].rol==1) {
             $('#usuario').empty()
             $('#usuario').append(`<a href ="/modificarusuario">${localStorage.getItem('nombre')} </a>`)
-            $('#usuario').append(`<a href ="/pedidos">Pedidos</a>`) 
+            $('#usuario').append(`<a href ="/pedidos">Pedidos</a>`)  
             $('#ifadmin').append(`<button id="botonabrir">agregar nuevo producto</button>`);
             $('#ifadmin').append(`<button id="botonabriroderta">agregar nueva oferta</button>`); 
 
@@ -378,8 +381,8 @@ $("#rangopreciomax").change(function() {
                     <div class="bar1"></div>
                     <div class="bar2"></div>
                     <div class="bar3"></div>    
-                    
                 </div>
+                <div>asdasd</div>
                 <div class="dropdown-content oculto" id="myDropdown">
                     <a onclick="verproductos(8)" class="Prodhijo">Placas Base</a>
                     <a onclick="verproductos(5)" class="Prodhijo">Procesadores</a>
@@ -446,21 +449,18 @@ $("#rangopreciomax").change(function() {
             </div>
         </div>
         
-        <div class="fondo_transparente">
-            <div class="modal">
+        <div class=" fondo_transparente">
+            <div class="modal2">
                 <div class="modal_cerrar">
                     <span>x</span>
                 </div>
                 <div class="modal_titulo">VENTANA MODAL</div>
-                <form action="/putimagen" method="post" enctype="multipart/form-data">
                 <div class="modal_mensaje">
                     <table id="tablamodal">
-                        
                         <tr>
                         <td><label for="">Nombre</label></td>
                         <td><input id="nomart" type="text"/></td>
                         </tr>
-                        
                         <tr>
                             <td><label for="">categoria</label></td>
                             <td><select id="catart" name="Marca">
@@ -474,32 +474,30 @@ $("#rangopreciomax").change(function() {
 
                             </select></td>
                         </tr>
-
                         <tr>
                         <td><label for="">Precio</label></td>
                         <td><input id="precart" type="number"/></td>
                         </tr>
-        
                         <tr>
                         <td><label for="">Marca</label></td>
                         <td><input id="marcart" type="text"/></td>
                         </tr>
-                        <tr><td colspan="2">
-                            
-                                <input type="file" id="subirfoto" name="avatar" />
-
-                        </td></tr>
-        
+                        <tr>
+                            <td colspan="2"><input type="file" id="subirfoto" name="avatar" /></td>
+                        </tr>
                     </table>
                 </div>
+                <div></div>
                 <div class="modal_botones">
                     
-                    <input id="foto" type="submit" onclick="añadirarticulo()" value="Submit">
-                </div>
-            </form>
-            </div>
-        </div>
+                    <button class="boton" onclick="añadioferta()">Guardar</button>
 
+                </div>  
+            </div>  
+        </div>  
+
+
+        <!-- -->
 
         <div class=" fondo_transparente2">
             <div class="modal2">
@@ -536,6 +534,7 @@ $("#rangopreciomax").change(function() {
                         </tr>
                     </table>
                 </div>
+                <div></div>
                 <div class="modal_botones2">
                     
                     <button class="boton" onclick="añadioferta()">Guardar</button>
@@ -549,15 +548,7 @@ $("#rangopreciomax").change(function() {
        
 
         <div id="contenido">
-        <div id="ordenar" onchange="Filtrararticulos()">
-            <i>ordenar por </i>
-            <select name="ordenar">
-                <option value="0" selected>nuevo</option>
-                <option value="1">mas barato</option>
-                <option value="2" >mas caro</option>
-                <option value="3">stock</option>
-              </select>
-        </div>   
+        
         <div id="productos">
 
         </div> 

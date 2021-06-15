@@ -17,19 +17,22 @@ body{
 
 #registrarse{
     font-size: 35px;
-    color: red;
+    color: rgb(165, 165, 165);
     text-align:center;
 
 }
 #enviar{
     font-size: 30px;
-    background-color: rgb(245, 12, 12);
-    color: white;
-    border-radius: 5%;
     text-align: center;
+    background: white;
+    color: rgb(43, 43, 43);
+    text-decoration: none;
+    border-radius: 25px;
+    border: 1px solid rgb(56, 56, 56);
 }
-#enviar :hover{
-    background-color: rgb(157, 157, 157);
+#enviar:hover {
+    background: rgb(114, 114, 114);
+    color: white;
 }
 
 #divenviar{
@@ -55,10 +58,16 @@ body{
 #atras{
 
     font-size: 20px;
-    background-color: rgb(245, 12, 12);
+    background-color: rgb(119, 119, 119);
     color: white;
     border-radius: 5%;
     text-align: right;
+}
+#atras:hover{
+
+    color :black;
+    background-color: rgb(255, 255, 255);
+
 }
 button{
     cursor:pointer;
