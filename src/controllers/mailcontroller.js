@@ -3,7 +3,7 @@ var nodemailer = require('nodemailer');
 exports.sendEmail = function(req, res){
     let correo= req.body.correo;
     let cabecera= req.body.cabecera;
-    let texto= req.body.texto;
+    let html= req.body.html;
     //tipo de servicio y autenticacion dentro de ese servicio
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
@@ -17,10 +17,12 @@ exports.sendEmail = function(req, res){
     from: 'tiendaproyecto3@gmail.com',
     to: `${correo}`,
     subject: `${cabecera}`,
-    text: `${texto}` 
+    text:null,
+    html: `${html}` 
 };
 //respuesta
 transporter.sendMail(mailOptions, function(error, info){
+    console.log(mailOptions)
     if (error){
         console.log(error);
         res.send(500, err.message);

@@ -23,7 +23,26 @@ const CookieParser = require('cookie-parser');
 //passport
 const passport = require('passport');
 //PUERTO
-var PORT = 8010;
+var PORT = 80;
+// Paquete HTTP & HTTPS
+const http = require('http');
+const https = require('https');
+// Paquete FileSystem
+const fs = require('fs');
+// Certificados
+const privateKey = fs.readFileSync('./certs/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('./certs/cert.pem', 'utf8');
+const ca = fs.readFileSync('./certs/chain.pem', 'utf8');
+
+const credentials = {
+	key: privateKey,
+	cert: certificate,
+	ca: ca
+};
+
+
+
+
 
 /*————Conexion BD————*/
 app.use(myConection(mysql, {
@@ -89,5 +108,7 @@ app.use(function (err, req, res, next) {
 });
 
 /*———— API empezar ————*/
-app.listen(PORT, () => logger.log("info", "Listening on port %s", PORT));
-
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
+httpServer.listen(80);
+httpsServer.listen(443);

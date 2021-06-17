@@ -110,11 +110,13 @@ router.post('/buscar',SkeletonController.buscar);
  router.post('/eliminarstock',SkeletonController.eliminarstock);
  /**añadir stock */
  router.post('/anadirstock',SkeletonController.anadirstock);
- 
+/**añadir stock */
+router.post('/anadirofertas',SkeletonController.añadiroferta);
 
 /**putimagen */
 router.post('/putimagen',upload.single('avatar'),(req,res)=>{
     res.sendFile(rutavistas +'paraartras.html');
+
 });
 
 

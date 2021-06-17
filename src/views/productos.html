@@ -3,17 +3,19 @@
 
 <head>
     <!--css-->
+    <link href="/public/css/reseteador.css" rel="stylesheet" type="text/css">
+    <link href="/public/css/normalizador.css" rel="stylesheet" type="text/css">
     <link href="/public/css/productos.css" rel="stylesheet" type="text/css">
     <link href="/public/css/base.css" rel="stylesheet"  type="text/css">
-    <link href="/public/css/normalizador.css" rel="stylesheet" type="text/css">
-    <link href="/public/css/reseteador.css" rel="stylesheet" type="text/css">
+   
 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="/public/jquery.jgrowl.min.js"></script>
-<link href="/public/jgrowl.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/public/jquery.jgrowl.min.js"></script>
+    <link href="/public/jgrowl.css" rel="stylesheet" type="text/css">
 
  
     <!--fin-->
+    <link rel="icon" type="image/png" href="/public/iconos/logo-diseno-ordenador_1465-85.png">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -199,9 +201,9 @@ $("#rangopreciomax").change(function() {
             window.open(`/productos?busqueda=${$('#buscarvalor').val()}`, "_self");
 
         }
-        else[
-            alert ('No ha escrito nada para buscar')
-        ]
+        else{
+            $.jGrowl('No ha escrito nada para buscar', { life:3000,theme:'growl-error'});
+        }
     }
 
 
@@ -213,6 +215,10 @@ $("#rangopreciomax").change(function() {
     function addarticulo(obj) {
         $("#productos").empty();
         let x=0;
+        if (obj.length==0) {
+            $('#productos').append(`<h1 id="noencuentra">No se ha encontrado ningun producto <br> con la busqueda "${urlparambuscar}"</h1>`)
+        }
+        else{
             while (x < obj.length) {
             if(admin){
                 activo=obj[x].Activo==1?"Activo":"No activado"
@@ -230,7 +236,8 @@ $("#rangopreciomax").change(function() {
 
             }
             x=x+1;
-            }     
+            }
+        }     
     };
      
     function añadiroquitar(idarticulo,){
@@ -244,26 +251,6 @@ $("#rangopreciomax").change(function() {
     }
 
 
-    //si un check box cambia usaria esta funcion
-    function checkchange(elem,index){
-        id=index
-        activo=$(elem).is(":checked");
-        pedidos=[]
-        pedidos=$.ajax({url: "/obtenerpedidos",type: "GET",async:false});
-
-        console.log(pedidos);
-        let existepedido=pedidos.responseJSON.some(e=>e.ID_producto==id)
-        if (existepedido) {
-           alert("no se puede activar el producto al estar en un pedido")
-        }
-        else{
-            $.ajax({url: "/chgactivo",type: "POST",data: {id:id,activo:activo}});
-            $(`#activo${index}`).empty();
-            $(`#activo${index}`).html(activo==true?"Activo":"No activado");
-        }
-        
-
-    }
     
     function añadirarticulo(){
         debugger
@@ -276,10 +263,10 @@ $("#rangopreciomax").change(function() {
         urlfotos=`public/uploads/${urlfotos}`
 
         if (id=="mal" || nombre=="mal"|| categoria=="mal"|| precio=="mal"|| marca=="mal") {
-           alert(`Tienes que rellenar todos los campos`) 
+            $.jGrowl('Tienes que rellenar todos los campos', { life:3000,theme:'growl-error'});
         }
         else{
-            $.ajax({url: "/anadirarticulo",type: "POST",data: {categoria:categoria,nombre:nombre,precio:precio,marca:marca,urlfoto:urlfotos}});
+            $.ajax({url: "/anadirarticulo",type: "POST",data: {categoria:categoria,nombre:nombre,precio:precio,marca:marca,urlfoto:urlfotos},async:false});
         }
 
     }
@@ -292,10 +279,12 @@ $("#rangopreciomax").change(function() {
 
 
         if (descripcion=="mal" || idproducto=="mal"|| fechainicio=="mal"|| fechafinal=="mal"|| descuento=="mal") {
-            alert(`Tienes que rellenar todos los campos`) 
+            $.jGrowl('Tienes que rellenar todos los campos', { life:3000,theme:'growl-error'});
+
         }
         else{
             $.ajax({url: "/anadirofertas",type: "POST",data: {descripcion:descripcion,idproducto:idproducto,fechainicio:fechainicio,fechafinal:fechafinal,descuento:descuento}});
+            $('.fondo_transparente2').css("display", "none");
         }
     }
 
@@ -374,7 +363,7 @@ $("#rangopreciomax").change(function() {
     <div class="navbar">
         <div id="logoDropdown">
             <div id="logo">
-                <a href="/"></a>
+                <a href="/"><img src="/public/iconos/logo-diseno-ordenador_1465-85.png" height="50"></a>
             </div>
             <div id="dropdown" onclick="myFunction(this)">
                 <div id="btnDropdown">
@@ -382,7 +371,6 @@ $("#rangopreciomax").change(function() {
                     <div class="bar2"></div>
                     <div class="bar3"></div>    
                 </div>
-                <div>asdasd</div>
                 <div class="dropdown-content oculto" id="myDropdown">
                     <a onclick="verproductos(8)" class="Prodhijo">Placas Base</a>
                     <a onclick="verproductos(5)" class="Prodhijo">Procesadores</a>
@@ -394,19 +382,6 @@ $("#rangopreciomax").change(function() {
                 </div>
             </div>
         </div>
-
-        <!--
-            <button class="dropbtn">Dropdown</button>
-             <div class="dropdown-content" id="myDropdown">
-                <a onclick=verproductos(8) class="Prodhijo">Placas Base</a>
-                <a onclick=verproductos(5) class="Prodhijo">Procesadores</a>
-                <a onclick=verproductos(2) class="Prodhijo">Discos Duros</a>
-                <a onclick=verproductos(4) class="Prodhijo">Tarjetas Gráficas</a>
-                <a onclick=verproductos(6) class="Prodhijo">Memoria RAM</a>
-                <a onclick=verproductos(7) class="Prodhijo">Cajas</a>
-                <a onclick=verproductos(3) class="Prodhijo">Fuentes Alimentación</a>
-            </div>
-    -->
         <div id="buscar">
             <input id="buscarvalor" type="search" placeholder="Buscar" size="35" /><button
                 onclick="buscarproducto()"
@@ -417,7 +392,7 @@ $("#rangopreciomax").change(function() {
         </div>
 
         <div id="usuario">
-            <a href="/login">Logearse</a>
+            <a href="/login">Iniciar sesion</a>
             <a href="/register">Registrarse</a>
         </div>
     </div>
@@ -456,6 +431,7 @@ $("#rangopreciomax").change(function() {
                 </div>
                 <div class="modal_titulo">VENTANA MODAL</div>
                 <div class="modal_mensaje">
+                    <form action="/putimagen" method="POST" enctype="multipart/form-data">
                     <table id="tablamodal">
                         <tr>
                         <td><label for="">Nombre</label></td>
@@ -490,9 +466,10 @@ $("#rangopreciomax").change(function() {
                 <div></div>
                 <div class="modal_botones">
                     
-                    <button class="boton" onclick="añadioferta()">Guardar</button>
+                    <button class="boton" onclick="añadirarticulo()" >Guardar</button>
 
                 </div>  
+            </form>
             </div>  
         </div>  
 
@@ -558,9 +535,10 @@ $("#rangopreciomax").change(function() {
     </div>
     <div class="footer">
 
-    <div class="footertitulo">
-            <i>aaaa</i>
-    </div>
+        <div class="footer">
+            <div class="footertitulo">
+                <i id="relieve">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</i>
+            </div>
 
     <hr class="separador">
 
@@ -578,11 +556,19 @@ $("#rangopreciomax").change(function() {
             </div>
 
         <div>
+            <h4 class="columnas"><Strong><u>contactanos</u></Strong></h4>
+            <a  class="columnasfooter">Instagram</a>
+            <a  class="columnasfooter">Iwitter</a>
+            <a  class="columnasfooter">Facebook</a>
+            <a  class="columnasfooter">Telegram</a>
+            <a  class="columnasfooter">Tiendaproyecto3@gmail.com</a>
+            
         </div>
     </div>
 
     <div class="footerfinal">
-        <div>adasdasdasd</div>
+        <div>Infoparra.C\ Naranco ,nº. Polígono industrial Las Salinas,CP 41013, Sevilla. ESPAÑA.
+        </div>
     </div>
 </div>
 

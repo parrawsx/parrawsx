@@ -16,15 +16,16 @@ var connection = mysql.createPool({
     port: '3306',  
     user: "root", 
     password: "1QAws3ED_", 
-    database: "proyecto_tienda"
+    database: "proyecto_tienda",
+
   });
 
 module.exports = {
     getVersionId: getVersion,
-    getObtenerofertas:getObtenerofertas,
+    getObtenerofertas:getObtenerofertas, 
     getObtenerarticulos:getObtenerarticulos,
     PostFiltroarticulos:PostFiltroarticulos,
-    getcategoria:getcategoria,
+    getcategoria:getcategoria, 
     getmarcas:getmarcas,
     getObtenerproducto:getObtenerproducto,
     postañadirusuario:postañadirusuario,
@@ -106,9 +107,10 @@ function getObtenerofertas (req,res) {
 //cambiado 
 function getObtenerarticulos (req,res) {
 
+    
 
     req.getConnection((err,con) =>{
-        let pepe = req.headers.categoria == "null" ?`select * from productos where activo = true group by Nombre;`:`select * from productos where id_categoria=${req.headers.categoria} and  activo = true group by Nombre;`
+        let pepe = req.headers.categoria == "null" ?`select productos.*,count(stockproductos.id_stock) as stock from productos ,stockproductos where stockproductos.id_articulo=productos.ID_producto and  activo = true group by Nombre;`:`select productos.*,count(stockproductos.id_stock) as stock from productos ,stockproductos where stockproductos.id_articulo=productos.ID_producto  and  id_categoria=${req.headers.categoria} and  activo = true group by Nombre;`
         if (err) {   
             console.log('mal')
         }
@@ -317,14 +319,13 @@ function postloginusuario (req,res){
 
         
 
-
-        let accion =`Select * from usuario where nickname=?`;
-        if (err) {   
-            console.log('mal')
-        }
-
-        else{
-            if (passwd==encriptacion.decrypt(existe.passwd)) {
+        if(existe){
+            let accion =`Select * from usuario where nickname=?`;
+            if (err) {   
+                console.log('mal')
+            }
+            else{
+                if (passwd==encriptacion.decrypt(existe.passwd)) {
 
             
                 passwd==encriptacion.decrypt(existe.passwd)
@@ -333,11 +334,15 @@ function postloginusuario (req,res){
                         let parseado =JSON.stringify(result)
                         parseado=JSON.parse(parseado) 
                         return res.status(200).json(parseado);
-                })
+                    })
+                }
+                else{
+                    return res.status(200).json({message:"error",error:"El usuario o la contraseña estan mal"}); 
+                }
             }
-            else{
-                return res.status(200).json({message:"error",error:"El usuario o la contraseña estan mal"}); 
-            }
+        }
+        else{
+            return res.status(200).json({message:"error",error:"El usuario no existe"});  
         }
     });
     })()
@@ -704,7 +709,7 @@ function crearestadopedido(req,res){
     req.getConnection((err,con) =>{
  
         idpedido=req.body.idpedido
-        let accion =`INSERT INTO estado (Id_pedido, Descripcion)VALUES ("${idpedido}", "Tramitando");`;
+        let accion =`INSERT INTO estado (Id_pedido, Descripcion)VALUES ("${idpedido}", "Pendiente de pago");`;
 
         if (err) {   
             console.log('mal')
@@ -875,18 +880,18 @@ function newatributo (req,res){
 function buscar (req,res){
     req.getConnection((err,con) =>{
 
-        let Busqueda=`%${req.body.Busqueda}%`;
-
-        let accion =`select productos.*,count(stockproductos.id_stock) as stock from productos ,stockproductos where stockproductos.id_articulo=productos.ID_producto  and (nombre like "${Busqueda}" or marca like "${Busqueda}") and activo = true group by ID_producto `;
-
-        if (err) {   
-            console.log('mal')
-        }
+        let Busqueda=req.body.Busqueda;
+ 
+        let accion =`select productos.*,count(stockproductos.id_stock) as stock from productos ,stockproductos where stockproductos.id_articulo=productos.ID_producto  and (nombre like ? or marca like ?) and activo = true group by ID_producto `;
+        if (err) {
+           throw error;
+        } 
 
         else{
-            con.query(accion,(err, result) => {
+            con.query(accion,[`%${Busqueda}%`,`%${Busqueda}%`],(err, result) => { 
+
                 if (err) console.log(err);
-                    let parseado =JSON.stringify(result)
+                    let parseado =JSON.stringify(result) 
                     parseado=JSON.parse(parseado) 
                     return res.status(200).json(parseado);
             })
@@ -1029,7 +1034,7 @@ function añadiroferta(req,res) {
             console.log('mal') 
         }  
         else{ 
-            con.query( `INSERT INTO oferta(descripcion,ID_producto,fechInicio,Fechafinal,descuento) VALUES(?,?,?,?,?);`,[descripcion,idproducto,fechainicio,fechafinal,descuento],(err, result) => {
+            con.query( `INSERT INTO proyecto_tienda.oferta(descripcion,ID_producto,fechInicio,Fechafinal,descuento) VALUES(?,?,?,?,?);`,[descripcion,idproducto,fechainicio,fechafinal,descuento],(err, result) => {
                 if (err) console.log(err);
                     let parseado =JSON.stringify(result)
                     parseado=JSON.parse(parseado) 
