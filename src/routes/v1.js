@@ -21,12 +21,10 @@ const NoController = (req, res, next) => {
 const storage = multer.diskStorage({
     destination:'./public/uploads' ,
     filename: function (req,res,cb) {
-        console.log(req.body.nombre)
        cb("",res.originalname) 
     }
 })
 const upload = multer({ storage:storage })
-
 
 //GET Y POST
 /**getVersion */
@@ -47,37 +45,26 @@ router.get('/getproducto', SkeletonController.getObtenerproducto);
 router.post('/registerusuario',SkeletonController.postañadirusuario);
 /**loginusuario */
 router.post('/loginusuario',SkeletonController.postloginusuario);
-
 /**modificarusuario */
 router.post('/modificarusuarioa',SkeletonController.postmodificarusuario);
-
 /**loginmodificarusuario */
 router.post('/logmodusuario',SkeletonController.postloginmodusuario);
-
 /**enviar pedido */
 router.post('/pedido',SkeletonController.postpedido);  
-
 /**cambiar pedido inactivo */
 router.post('/pedidoinactivo',SkeletonController.postpedidoinactivo);  
-
 /**cambiar pedido inactivo */
 router.post('/cesta',SkeletonController.postcesta);
-
 /**Obtener productos de la cesta */
 router.post('/obtenercesta',SkeletonController.postobtenercesta);
-
 /**eliminar productos de la cesta  */
 router.post('/elimnarprodcesta',SkeletonController.elimnarproductocesta);
-
 /**obtener todos los productos para el administradpr */
 router.get('/Obtenerarticulosadmin',SkeletonController.getObtenerarticulosadmin);
-
 /**filtrar todos los productos para el administradpr */
 router.post('/filtrarticulosadmin',SkeletonController.PostFiltroarticuloadmin); 
-
 /**obtener todos los productos para el administradpr */
 router.post('/chgactivo',SkeletonController.postchgactivo);
-
 /**obtener todos los productos para el administradpr */
 router.post('/anadirarticulo',SkeletonController.añadirarticuloadmin);
 /**obtener todos los productos para el administradpr */

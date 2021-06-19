@@ -18,10 +18,7 @@ const logger = require("./src/utils/logger");
 const morgan = require("morgan");
 //moment-timezone
 const moment = require("moment-timezone");
-//cokie-parser
-const CookieParser = require('cookie-parser');
-//passport
-const passport = require('passport');
+
 //PUERTO
 var PORT = 80;
 // Paquete HTTP & HTTPS
@@ -39,10 +36,6 @@ const credentials = {
 	cert: certificate,
 	ca: ca
 };
-
-
-
-
 
 /*————Conexion BD————*/
 app.use(myConection(mysql, {
@@ -93,7 +86,7 @@ app.use("/", v1);
 app.all("*", (req, res) => res.status(404).json({ success: false, message: "Lost much?" }));
 
 
-/*———— APImanejo de errores de rutas ————*/
+/*———— API manejo de errores de rutas ————*/
 app.use(function (err, req, res, next) {
     res.status(err.statusCode || 500).send(err.json || { success: false, message: "Something went wrong" });
     logger.error(
@@ -107,7 +100,7 @@ app.use(function (err, req, res, next) {
     );
 });
 
-/*———— API empezar ————*/
+/*———— API Servidor web ————*/
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
 httpServer.listen(80);

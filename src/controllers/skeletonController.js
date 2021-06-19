@@ -84,12 +84,12 @@ function getObtenerofertas (req,res) {
 
     req.getConnection((err,con) =>{
         if (err) {
-            console.log('mal')
+            throw error
         }
         else{
             
         con.query(`select oferta.*,productos.*,(Precio-(Precio*descuento/100)) as precdesc, count(stockproductos.id_stock) as stock from oferta,productos,stockproductos where oferta.ID_producto = productos.ID_producto and  productos.ID_producto = stockproductos.id_articulo group by productos.ID_producto;`, (err, result) => {
-            if (err) console.log(err);
+            if (err) res.status(400),json(err);
                 let parseado =JSON.stringify(result)
                 parseado=JSON.parse(parseado)                
                 return res.status(200).json(parseado);
@@ -139,16 +139,16 @@ function PostFiltroarticulos (req,res) {
         let Marca =req.body.Marca;
     
         let categoria=req.body.categoria;
-        let order =req.body.order;
+
         
-        let pepe =`select productos.*,count(stockproductos.id_stock) as stock from productos ,stockproductos where stockproductos.id_articulo=productos.ID_producto  and Precio>? and Precio<? and id_categoria  IN (?) and marca IN (${Marca})  and  activo = true group by ID_producto order by ?;`;
+        let pepe =`select productos.*,count(stockproductos.id_stock) as stock from productos ,stockproductos where stockproductos.id_articulo=productos.ID_producto  and Precio>? and Precio<? and id_categoria  IN (?) and marca IN (${Marca})  and  activo = true group by ID_producto;`;
 
         if (err) {   
-            console.log('mal')
+            throw error
         }
 
         else{
-        con.query(pepe,[PrecioMin,PrecioMax,categoria,order],(err, result) => {
+        con.query(pepe,[PrecioMin,PrecioMax,categoria],(err, result) => {
             if (err) console.log(err);
                 let parseado =JSON.stringify(result)
                 parseado=JSON.parse(parseado)   
@@ -598,16 +598,15 @@ function PostFiltroarticuloadmin (req,res) {
         let Marca =req.body.Marca;
     
         let categoria=req.body.categoria;
-        let order =req.body.order;
         
-        let pepe =`select productos.*,count(stockproductos.id_stock) as stock from productos LEFT JOIN stockproductos ON productos.ID_producto = stockproductos.id_articulo where  Precio>? and Precio<? and id_categoria  IN (?) and marca IN (${Marca}) and  activo = true group by ID_producto ; order by ?;`;
+        let pepe =`select productos.*,count(stockproductos.id_stock) as stock from productos LEFT JOIN stockproductos ON productos.ID_producto = stockproductos.id_articulo where  Precio>? and Precio<? and id_categoria  IN (?) and marca IN (${Marca}) and  activo = true group by ID_producto ;`;
 
         if (err) {   
             console.log('mal')
         }
 
         else{
-        con.query(pepe,[PrecioMin,PrecioMax,categoria,order],(err, result) => {
+        con.query(pepe,[PrecioMin,PrecioMax,categoria],(err, result) => {
             if (err) console.log(err);
                 let parseado =JSON.stringify(result)
                 parseado=JSON.parse(parseado)                
@@ -884,7 +883,7 @@ function buscar (req,res){
  
         let accion =`select productos.*,count(stockproductos.id_stock) as stock from productos ,stockproductos where stockproductos.id_articulo=productos.ID_producto  and (nombre like ? or marca like ?) and activo = true group by ID_producto `;
         if (err) {
-           throw error;
+           throw error
         } 
 
         else{

@@ -186,13 +186,13 @@ $("#rangopreciomax").change(function() {
         let PrecioMin =$('#valormin').val() ;
         let Marca =  $("#bmarca option:selected").val()!=-1 ? `select DISTINCT(Marca)from productos where Marca="${$("#bmarca option:selected").html()}"`:'select DISTINCT(Marca)from productos';
         let categoria=urlparam;
-        let order = arrayordernar.find(e=>e.id==$("#ordenar option:selected").val()).value
+        //let order = arrayordernar.find(e=>e.id==$("#ordenar option:selected").val()).value
         objetoselect=[];
         if (admin) {
-        objetoselect=$.ajax({url:"/filtrarticulosadmin", type: "POST",data: {PrecioMax: PrecioMax,PrecioMin:PrecioMin,Marca:Marca,categoria: categoria,order:order}, async: false})   
+        objetoselect=$.ajax({url:"/filtrarticulosadmin", type: "POST",data: {PrecioMax: PrecioMax,PrecioMin:PrecioMin,Marca:Marca,categoria: categoria}, async: false})   
         }
         else{
-        objetoselect=$.ajax({url: "/filtrarticulos",type: "POST",data: {PrecioMax: PrecioMax,PrecioMin:PrecioMin,Marca:Marca,categoria: categoria,order:order},async: false});
+        objetoselect=$.ajax({url: "/filtrarticulos",type: "POST",data: {PrecioMax: PrecioMax,PrecioMin:PrecioMin,Marca:Marca,categoria: categoria},async: false});
         }
         addarticulo(objetoselect.responseJSON);
     };
@@ -280,11 +280,12 @@ $("#rangopreciomax").change(function() {
 
         if (descripcion=="mal" || idproducto=="mal"|| fechainicio=="mal"|| fechafinal=="mal"|| descuento=="mal") {
             $.jGrowl('Tienes que rellenar todos los campos', { life:3000,theme:'growl-error'});
-
         }
         else{
             $.ajax({url: "/anadirofertas",type: "POST",data: {descripcion:descripcion,idproducto:idproducto,fechainicio:fechainicio,fechafinal:fechafinal,descuento:descuento}});
             $('.fondo_transparente2').css("display", "none");
+            window.open(`/`, "_self");
+
         }
     }
 
@@ -429,7 +430,7 @@ $("#rangopreciomax").change(function() {
                 <div class="modal_cerrar">
                     <span>x</span>
                 </div>
-                <div class="modal_titulo">VENTANA MODAL</div>
+                <div class="modal_titulo">Agregar Producto</div>
                 <div class="modal_mensaje">
                     <form action="/putimagen" method="POST" enctype="multipart/form-data">
                     <table id="tablamodal">
@@ -481,7 +482,7 @@ $("#rangopreciomax").change(function() {
                 <div class="modal_cerrar2">
                     <span>x</span>
                 </div>
-                <div class="modal_titulo2">VENTANA MODAL</div>
+                <div class="modal_titulo2">Crear oferta</div>
                 <div class="modal_mensaje2">
                     
                     <table id="tablamodal2">
