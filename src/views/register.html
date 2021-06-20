@@ -3,14 +3,29 @@
 
 
 <script>
+    function validarEmail(valor) {
+        debugger
+	re=/^([\da-z_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/
+	    if(!re.exec(valor)){
+            $.jGrowl('"La dirección de email es incorrecta.', { life:3000,theme:'growl-error'});
+            return null
+	    }
+	    else {
+
+            return valor
+        }
+	}
+
 
     //registrar usuario
     function registrarusuario() {
 
-        password=$('#passwd').val()
-        correo=$('#correo').val()
-        nombre=$('#nombre').val()
+        password=$('#passwd').val();
+        correo=$('#correo').val();
+        correo=validarEmail(correo);
+        nombre=$('#nombre').val();
         let valorok =validar_password(password)
+        if (correo!=null){
         if (correo==null||correo==""||nombre==null||nombre=="") {
             $.jGrowl('tienes que rellenar todos los campos', { life:3000,theme:'growl-error'});
         }
@@ -29,6 +44,7 @@
                 $.jGrowl('La contraseña no cumple los requisitos', { life:1000,theme:'growl-error'});
             }
         }
+    }
 
     }
 

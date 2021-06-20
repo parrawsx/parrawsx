@@ -1,14 +1,14 @@
 {
     "name": "util-skeleton-api-node",
     "version": "1.0.0",
-    "description": "Esqueleto básico de una API en node 14.",
+    "description": "Aplicacion web Proyecto",
     "main": "backend.js",
     "scripts": {
         "start": "node backend",
         "test": "jest",
         "iniciar": "nodemon /src"
     },
-    "author": "",
+    "author": "Antonio sanchez",
     "license": "ISC",
     "repository": {},
     "dependencies": {

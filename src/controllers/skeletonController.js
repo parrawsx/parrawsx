@@ -259,8 +259,9 @@ function postañadirusuario(req,res){
         let nombre = req.body.nombre;
         let passwd = encriptacion.encrypt(req.body.passwd); 
         let correo =req.body.correo;
+        
         existe=users.find(e=>e.nickname==nombre)
-
+ 
 
         let accion =`INSERT INTO usuario (nickname,passwd,correo,rol)VALUES (?,?,?,2);`;
 
@@ -731,7 +732,7 @@ function crearestadopedido(req,res){
 //añadir articulo
 // usado en producto
 function Filtrarpedidos (req,res){
-    req.getConnection((err,con) =>{
+    req.getConnection((err,con) =>{ 
 
         let PrecioMax=req.body.PrecioMax ;
         let PrecioMin=req.body.PrecioMin;
