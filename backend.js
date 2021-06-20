@@ -19,13 +19,12 @@ const morgan = require("morgan");
 //moment-timezone
 const moment = require("moment-timezone");
 
-//PUERTO
-var PORT = 80;
 // Paquete HTTP & HTTPS
 const http = require('http');
 const https = require('https');
 // Paquete FileSystem
 const fs = require('fs');
+
 // Certificados
 const privateKey = fs.readFileSync('./certs/privkey.pem', 'utf8');
 const certificate = fs.readFileSync('./certs/cert.pem', 'utf8');

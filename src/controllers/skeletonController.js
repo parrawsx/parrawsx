@@ -110,14 +110,14 @@ function getObtenerarticulos (req,res) {
     
 
     req.getConnection((err,con) =>{
-        let pepe = req.headers.categoria == "null" ?`select productos.*,count(stockproductos.id_stock) as stock from productos ,stockproductos where stockproductos.id_articulo=productos.ID_producto and  activo = true group by Nombre;`:`select productos.*,count(stockproductos.id_stock) as stock from productos ,stockproductos where stockproductos.id_articulo=productos.ID_producto  and  id_categoria=${req.headers.categoria} and  activo = true group by Nombre;`
+        let query = req.headers.categoria == "null" ?`select productos.*,count(stockproductos.id_stock) as stock from productos ,stockproductos where stockproductos.id_articulo=productos.ID_producto and  activo = true group by Nombre;`:`select productos.*,count(stockproductos.id_stock) as stock from productos ,stockproductos where stockproductos.id_articulo=productos.ID_producto  and  id_categoria=${req.headers.categoria} and  activo = true group by Nombre;`
         if (err) {   
-            console.log('mal')
+                return res.status(500).json(err);
         }
 
 
         else{
-        con.query(pepe,(err, result) => {
+        con.query(query,(err, result) => {
             if (err) console.log(err);
                 let parseado =JSON.stringify(result)
                 parseado=JSON.parse(parseado)                
@@ -174,7 +174,9 @@ function getmarcas (req,res) {
         
         else{
         con.query(query, (err, result) => {
-            if (err) console.log(err);
+            if (err) {
+                return res.status(500).json(err);
+            }
                 let parseado =JSON.stringify(result)
                 parseado=JSON.parse(parseado)              
                 return res.status(200).json(parseado);
@@ -193,7 +195,7 @@ function getcategoria (req,res) {
     req.getConnection((err,con) =>{
         let query ='select DISTINCT(productos.id_categoria), categoria.Nombre from productos,categoria where categoria.id_categoria=productos.id_categoria;';
         if (err) {
-            console.log('mal')
+            return res.status(500).json(err);
         }
         else{
  
@@ -222,7 +224,8 @@ function getObtenerproducto (req,res) {
 
         else{
         con.query(pepe,(err, result) => {
-            if (err) console.log(err); 
+            if (err) {return res.status(500).json(err);}
+
                 let parseado =JSON.stringify(result)
                 parseado=JSON.parse(parseado)                
                 return res.status(200).json(parseado);
@@ -264,7 +267,7 @@ function postañadirusuario(req,res){
  
 
         let accion =`INSERT INTO usuario (nickname,passwd,correo,rol)VALUES (?,?,?,2);`;
-
+ 
         if (err) {   
             console.log('mal')
         }

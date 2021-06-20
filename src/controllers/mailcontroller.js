@@ -24,10 +24,8 @@ exports.sendEmail = function(req, res){
 transporter.sendMail(mailOptions, function(error, info){
     console.log(mailOptions)
     if (error){
-        console.log(error);
         res.send(500, err.message);
     } else {
-        console.log("Email send");
         res.status(200).json(req.body);
     }
 });

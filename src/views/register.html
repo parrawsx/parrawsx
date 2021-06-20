@@ -25,11 +25,12 @@
         correo=validarEmail(correo);
         nombre=$('#nombre').val();
         let valorok =validar_password(password)
-        if (correo!=null){
+        
         if (correo==null||correo==""||nombre==null||nombre=="") {
             $.jGrowl('tienes que rellenar todos los campos', { life:3000,theme:'growl-error'});
         }
         else{
+            if (correo!=null){
             if (valorok) {
                 usuario=$.ajax({url:"/registerusuario", type: "POST",data: {nombre : nombre,passwd : password,correo:correo}, async: false})
                 if (usuario.responseJSON.error) {
